@@ -1,18 +1,14 @@
-from abc import ABC
-
 from PySide6.QtWidgets import QWidget
 
-class Component:
-    
-    def properties_widget(self) -> QWidget:
-        """ Widget that allows you to adjust this widget """
-        raise NotImplementedError()
+from loadsave import SerialisableElement
+from gui.has_gui_element import HasGuiElement
+from gui.has_tree_representation import HasTreeRepresentation
 
-    def serialised(self) -> dict:
-        """ Serialise to a JSON dictionary """
-        raise NotImplementedError()
+class Component(SerialisableElement, HasGuiElement, HasTreeRepresentation):
 
     @staticmethod
-    def deserialise(data: dict):
-        """ Deserialise a JSON dictionary """
-        raise NotImplementedError()
+    def material_surface_selection() -> QWidget:
+        pass
+
+    def gui_element(self) -> QWidget:
+        pass
