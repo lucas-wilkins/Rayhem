@@ -1,0 +1,2 @@
+class RayBundle:
+    pass
