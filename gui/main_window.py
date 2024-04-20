@@ -6,6 +6,7 @@ from PySide6.QtGui import Qt
 
 from gui.tree import ElementsTree
 from gui.properties import Properties
+from gui.rendering.GL.scene import Scene
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -16,7 +17,12 @@ class MainWindow(QMainWindow):
         # Main GUI Components
         self.elementsTree = ElementsTree(self)
         self.properties = Properties(self)
-        self.glWidget = QOpenGLWidget(self)
+        self.glWidget = Scene(self)
+
+        # Show something in the GL renderer
+        from gui.rendering.GL.color import uniform_coloring
+        from gui.rendering.GL.icosahedron import Icosahedron
+        self.glWidget.add(Icosahedron(edge_colors=uniform_coloring(1, 1, 1), colors=uniform_coloring(0.7, 0, 0.7)))
 
 
         self.setCentralWidget(self.glWidget)

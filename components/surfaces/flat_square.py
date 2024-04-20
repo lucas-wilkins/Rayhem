@@ -73,8 +73,6 @@ class FlatSquare(Surface):
         :param internal_coordinates: internal coordinates for a point on the surface
         :returns: corresponding normal in local coordinate system """
 
-
-
         zeros = np.zeros((internal_coordinates.shape[0],2))
         ones = np.ones((internal_coordinates.shape[0],1))
 
@@ -90,5 +88,5 @@ class FlatSquare(Surface):
             [ 1, -1, 0]])
 
         triangles = np.array([[0, 1, 2], [0, 2, 3]], dtype=int)
-        
+
         return points, triangles
