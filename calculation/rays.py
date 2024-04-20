@@ -1,6 +1,7 @@
 import numpy as np
 
 from components.scene_tree import SceneTree
+from components.path import Path
 
 class RayBundle:
     """ Main class dealing with rays """
@@ -27,6 +28,7 @@ class RayBundle:
         if escaped is None:
             self.escaped = np.zeros((self.origins.shape[0],), dtype=bool)
 
-    def propagate(self, tree: SceneTree):
+    def propagate(self, tree: SceneTree, path: Path | None, remove_escapees: bool):
+        """ Main propagation algorithm """
         pass
 

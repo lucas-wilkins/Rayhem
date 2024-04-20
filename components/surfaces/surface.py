@@ -41,3 +41,6 @@ class Surface(SerialisableElement, HasGuiElement):
 
         raise NotImplementedError(f"internal_to_local_normal not implemented for {self.__class__}")
 
+    def mesh(self):
+        """ Return the mesh coordinates for drawing in the local frame """
+        raise NotImplementedError(f"mesh not implemented for {self.__class__}")
