@@ -5,10 +5,7 @@ from gui.has_gui_element import HasGuiElement
 from gui.has_tree_representation import HasTreeRepresentation
 
 class Component(SerialisableElement, HasGuiElement, HasTreeRepresentation):
+    """ Base class for anything in the scene tree """
 
-    @staticmethod
-    def material_surface_selection() -> QWidget:
-        pass
-
-    def gui_element(self) -> QWidget:
+    def update_component_id(self):
         pass

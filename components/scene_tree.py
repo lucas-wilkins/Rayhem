@@ -1,3 +1,4 @@
 class SceneTree:
-    pass
+    def update_component_ids(self):
+        pass
 
