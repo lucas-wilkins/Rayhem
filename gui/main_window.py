@@ -19,7 +19,7 @@ class MainWindow(QMainWindow):
         self.properties = Properties(self)
         self.glWidget = Scene(self)
 
-        # Show something in the GL renderer
+        # Show something in the GL renderer - temporary
         from gui.rendering.GL.color import uniform_coloring
         from gui.rendering.GL.icosahedron import Icosahedron
         self.glWidget.add(Icosahedron(edge_colors=uniform_coloring(1, 1, 1), colors=uniform_coloring(0.7, 0, 0.7)))

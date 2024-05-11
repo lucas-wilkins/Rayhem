@@ -1,5 +1,23 @@
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QTreeWidgetItem
+from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout
 
-class HasTreeRepresentation:
-    def gui_tree_representation(self) -> QWidget:
-        raise NotImplementedError(f"gui_tree_representation not implemented for {self.__class__}")
+class ElementTreeItem(QTreeWidgetItem):
+
+    def __init__(self, name: str | None):
+        self.debug_name = "<unnamed>" if name is None else name
+
+        super().__init__([self.debug_name])
+
+        print("Creating", name)
+
+    def settingsWidget(self):
+        widget = QWidget()
+        label = QLabel(self.debug_name)
+        layout = QVBoxLayout()
+
+        layout.addWidget(label)
+
+        widget.setLayout(layout)
+
+        return widget
+
