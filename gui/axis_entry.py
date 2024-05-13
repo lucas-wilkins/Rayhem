@@ -1,11 +1,16 @@
 from typing import Sequence
 
 import numpy as np
+
 from PySide6.QtWidgets import QWidget, QDoubleSpinBox, QLabel, QGridLayout
+from PySide6.QtCore import Signal
 
 from gui.appearance import error_style, normal_style
 
 class AxisEntry(QWidget):
+    """ GUI representation of a rotation axis"""
+
+    valueChanged = Signal()
     def __init__(self, parent=None, initial_value: Sequence[float] | None = None):
         super().__init__(parent)
 
@@ -64,6 +69,8 @@ class AxisEntry(QWidget):
 
         else:
             self._setBad()
+
+        self.valueChanged.emit()
     @property
     def value(self):
         norm = np.sqrt(np.sum(self._raw_value**2))

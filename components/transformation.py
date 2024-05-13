@@ -5,7 +5,8 @@ from OpenGL import GL
 from gui.axis_entry import AxisEntry
 from gui.has_gui_element import HasGuiElement
 from gui.has_tree_representation import ElementTreeItem
-from loadsave import SerialisableElement, DeserialisationError
+from gui.translation_entry import TranslationEntry
+from loadsave import DeserialisationError
 
 from components.ids import unique_id
 
@@ -16,13 +17,13 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QDouble
 _180_over_pi = 180/np.pi
 _pi_over_180 = np.pi / 180
 
-class Transformation(SerialisableElement, HasGuiElement, ElementTreeItem):
+class Transformation(HasGuiElement, ElementTreeItem):
     """ Translation used to specify the location of things"""
 
     def __init__(self, angle: float | None = None, axis: np.ndarray | None = None, translation: np.ndarray | None = None):
         self.debug_id = unique_id()
 
-        ElementTreeItem.__init__(self, f"Transformation {self.debug_id}")
+        ElementTreeItem.__init__(self,f"Transformation {self.debug_id}")
 
         self._angle = 0.0 if angle is None else angle
         self._axis = np.array([0.0, 0.0, 1.0]) if axis is None else axis
@@ -31,9 +32,13 @@ class Transformation(SerialisableElement, HasGuiElement, ElementTreeItem):
         self.rotation = np.eye(3)
         self.inv_rotation = np.eye(3)
 
-        self.visible = False # Show on GL window?
+        self._visible = False # Show on GL window?
 
         self._update_matrices()
+
+    @staticmethod
+    def serialisation_name() -> str:
+        return "transformation"
 
     def serialise(self):
         return {
@@ -75,6 +80,8 @@ class Transformation(SerialisableElement, HasGuiElement, ElementTreeItem):
         self._angle = angle
         self._update_matrices()
 
+        self.onAnythingChanged()
+
     @property
     def angle_deg(self):
         return self.angle * _pi_over_180
@@ -92,6 +99,8 @@ class Transformation(SerialisableElement, HasGuiElement, ElementTreeItem):
         self._axis = axis
         self._update_matrices()
 
+        self.onAnythingChanged()
+
     @property
     def translation(self):
         return self._translation
@@ -100,6 +109,18 @@ class Transformation(SerialisableElement, HasGuiElement, ElementTreeItem):
     def translation(self, translation):
         self._translation = translation
 
+        self.onAnythingChanged()
+
+
+    @property
+    def visible(self):
+        return self._visible
+
+    @visible.setter
+    def visible(self, value: bool):
+        self._visible = value
+
+        self.onAnythingChanged()
 
     def _update_matrices(self):
         r = Rotation.from_rotvec(self._angle * self._axis)
@@ -181,7 +202,7 @@ class Transformation(SerialisableElement, HasGuiElement, ElementTreeItem):
 
         angle_label = QLabel("Angle")
         angle = QDoubleSpinBox()
-        angle.setValue(self._angle)
+        angle.setValue(self.angle_deg)
 
         angle_layout.addWidget(angle_label)
         angle_layout.addWidget(angle)
@@ -195,40 +216,9 @@ class Transformation(SerialisableElement, HasGuiElement, ElementTreeItem):
         #
         # Translation
         #
-
-        translation_main_widget = QWidget()
-        translation_labels = QWidget()
-        translation_boxes = QWidget()
-
-        translation_main_layout = QVBoxLayout()
-        translation_labels_layout = QHBoxLayout()
-        translation_boxes_layout = QHBoxLayout()
-
-        translation_main_widget.setLayout(translation_main_layout)
-        translation_labels.setLayout(translation_labels_layout)
-        translation_boxes.setLayout(translation_boxes_layout)
-
-        tx = QDoubleSpinBox()
-        ty = QDoubleSpinBox()
-        tz = QDoubleSpinBox()
-
-        tx.setValue(self._translation[0])
-        ty.setValue(self._translation[1])
-        tz.setValue(self._translation[2])
-
-        translation_labels_layout.addWidget(QLabel("X"))
-        translation_labels_layout.addWidget(QLabel("Y"))
-        translation_labels_layout.addWidget(QLabel("Z"))
-
-        translation_boxes_layout.addWidget(tx)
-        translation_boxes_layout.addWidget(ty)
-        translation_boxes_layout.addWidget(tz)
-
-        translation_main_layout.addWidget(translation_labels)
-        translation_main_layout.addWidget(translation_boxes)
-
         main_layout.addWidget(QLabel("Translation:"))
-        main_layout.addWidget(translation_main_widget)
+        translation = TranslationEntry(initial_value=self._translation)
+        main_layout.addWidget(translation)
 
         # Rendering options
         do_render = QCheckBox("Show Axes")
@@ -236,6 +226,24 @@ class Transformation(SerialisableElement, HasGuiElement, ElementTreeItem):
 
         main_layout.addWidget(do_render)
 
+        # Callbacks
+        def onAngleChanged():
+            self.angle_deg = angle.value()
+
+        def onAxisChanged():
+            self.axis = axis_widget.value()
+
+        def onTranslationChanged():
+            self.translation = translation.value
+
+        def onVisibleChanged():
+            self.visible = do_render.isChecked()
+
+
+        angle.valueChanged.connect(onAngleChanged)
+        axis_widget.valueChanged.connect(onAxisChanged)
+        translation.valueChanged.connect(onTranslationChanged)
+        do_render.stateChanged.connect(onVisibleChanged)
 
         # Return the main widget
 
