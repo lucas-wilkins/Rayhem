@@ -1,4 +1,6 @@
 import numpy as np
+from OpenGL.GL import glTranslate, glRotate, glPushMatrix, glPopMatrix, glBegin, glEnd, glVertex, glColor
+from OpenGL import GL
 
 from gui.axis_entry import AxisEntry
 from gui.has_gui_element import HasGuiElement
@@ -10,6 +12,9 @@ from components.ids import unique_id
 from scipy.spatial.transform import Rotation
 
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QDoubleSpinBox, QCheckBox
+
+_180_over_pi = 180/np.pi
+_pi_over_180 = np.pi / 180
 
 class Transformation(SerialisableElement, HasGuiElement, ElementTreeItem):
     """ Translation used to specify the location of things"""
@@ -71,6 +76,14 @@ class Transformation(SerialisableElement, HasGuiElement, ElementTreeItem):
         self._update_matrices()
 
     @property
+    def angle_deg(self):
+        return self.angle * _pi_over_180
+
+    @angle_deg.setter
+    def angle_deg(self, value):
+        self.angle = value * _180_over_pi
+
+    @property
     def axis(self):
         return self._axis
 
@@ -110,6 +123,44 @@ class Transformation(SerialisableElement, HasGuiElement, ElementTreeItem):
     def reverse_direction_transform(self, directions: np.ndarray):
         """ Transform directions from parent frame to local frame"""
         return np.dot(directions, self.inv_rotation)
+
+    def gl_in(self):
+
+        axis = self.axis
+        translation = self.translation
+
+        glPushMatrix()
+
+        glTranslate(translation[0], translation[1], translation[2])
+        glRotate(self.angle_deg, axis[0], axis[1], axis[2])
+
+    def gl_out(self):
+        glPopMatrix()
+
+    def render(self):
+        """ Render: show a representation of the local x,y,z coordinate system """
+        if True:# self.visible:
+
+            # X - red
+            glBegin(GL.GL_LINES)
+            glColor(1,0,0)
+            glVertex(0,0,0)
+            glVertex(1,0,0)
+            glEnd()
+
+            # Y - green
+            glBegin(GL.GL_LINES)
+            glColor(0, 1, 0)
+            glVertex(0, 0, 0)
+            glVertex(0, 1, 0)
+            glEnd()
+
+            # X - red
+            glBegin(GL.GL_LINES)
+            glColor(0, 0, 1)
+            glVertex(0, 0, 0)
+            glVertex(0, 0, 1)
+            glEnd()
 
     def __repr__(self):
         return f"Transformation[{self.debug_id}]"

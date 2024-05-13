@@ -6,6 +6,7 @@ from PySide6.QtGui import Qt
 
 from gui.tree import ElementsTree
 from gui.properties import Properties
+from gui.path_editor.path_editor import PathEditor
 from gui.rendering.GL.scene import Scene
 
 class MainWindow(QMainWindow):
@@ -17,6 +18,7 @@ class MainWindow(QMainWindow):
         # Main GUI Components
         self.elementsTree = ElementsTree(self)
         self.properties = Properties(self)
+        self.path_editor = PathEditor(self)
         self.glWidget = Scene(self)
 
         # Show something in the GL renderer - temporary
@@ -28,6 +30,9 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.glWidget)
         self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.elementsTree)
         self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.properties)
+
+        self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.path_editor)
+
 
         # Make full screen
         self.showMaximized()

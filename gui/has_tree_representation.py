@@ -1,7 +1,9 @@
 from PySide6.QtWidgets import QTreeWidgetItem
 from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout
 
-class ElementTreeItem(QTreeWidgetItem):
+from gui.rendering.has_main_window_representation import HasMainWindowRepresentation
+
+class ElementTreeItem(QTreeWidgetItem, HasMainWindowRepresentation):
 
     def __init__(self, name: str | None):
         self.debug_name = "<unnamed>" if name is None else name
@@ -20,4 +22,3 @@ class ElementTreeItem(QTreeWidgetItem):
         widget.setLayout(layout)
 
         return widget
-

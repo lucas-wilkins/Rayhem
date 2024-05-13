@@ -1,5 +1,6 @@
 from typing import Callable
 
+""" Generate unqiue ids for components """
 
 def _id_tracker():
     ids = [-1]

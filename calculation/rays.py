@@ -1,7 +1,7 @@
 import numpy as np
 
 from components.scene_tree import SceneTree
-from components.path import Path
+from gui.path_editor.path import Path
 
 class RayBundle:
     """ Main class dealing with rays """
