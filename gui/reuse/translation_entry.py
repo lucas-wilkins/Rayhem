@@ -2,10 +2,10 @@ from typing import Sequence
 
 import numpy as np
 
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QDoubleSpinBox, QLabel
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel
 from PySide6.QtCore import Signal
 
-from gui.spinboxes import SpatialSpinBox
+from gui.reuse.spinboxes import SpatialSpinBox
 
 
 class TranslationEntry(QWidget):

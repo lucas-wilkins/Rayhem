@@ -1,19 +1,18 @@
 import numpy as np
 from OpenGL.GL import glTranslate, glRotate, glPushMatrix, glPopMatrix, glBegin, glEnd, glVertex, glColor
 from OpenGL import GL
-from PySide6.QtGui import QIcon
 
-from gui.axis_entry import AxisEntry
+from gui.reuse.axis_entry import AxisEntry
 from gui.element_tree_item import ElementTreeItem
-from gui.spinboxes import AngleSpinBox
-from gui.translation_entry import TranslationEntry
+from gui.reuse.spinboxes import AngleSpinBox
+from gui.reuse.translation_entry import TranslationEntry
 from loadsave import DeserialisationError
 
 from components.ids import unique_id
 
 from scipy.spatial.transform import Rotation
 
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QDoubleSpinBox, QCheckBox
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox
 
 _180_over_pi = 180/np.pi
 _pi_over_180 = np.pi / 180

@@ -1,15 +1,17 @@
-from PySide6.QtWidgets import QDockWidget, QTreeWidget, QAbstractItemView
+from PySide6.QtWidgets import QDockWidget, QTreeWidget, QAbstractItemView, QTreeWidgetItem, QStyle
 from PySide6.QtGui import Qt
 
-from gui.element_tree_root import ElementTreeRoot
-from components.transformation import Transformation
 from components.element import ElementTreeItem
 from loadsave import DeserialisationError
 
-# Lookup for deserialisation
-_class_lookup: dict[str, type[ElementTreeItem]] = {cls.serialisation_name(): cls for cls in [ElementTreeRoot, Transformation]}
+class ElementLibraryGroup(QTreeWidgetItem):
+    def __init__(self, name: str):
+        super().__init__([name])
 
-class ElementTree(QDockWidget):
+        self.name = name
+
+
+class ElementLibrary(QDockWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -21,9 +23,17 @@ class ElementTree(QDockWidget):
         self.tree = QTreeWidget()
         self.tree.setHeaderHidden(True)
 
-        self.sceneTreeRoot = ElementTreeRoot()
+        self.sources = ElementLibraryGroup("Sources")
+        self.lenses = ElementLibraryGroup("Lenses")
+        self.mirrors = ElementLibraryGroup("Mirrors")
+        self.detectors = ElementLibraryGroup("Detectors")
+        self.other = ElementLibraryGroup("Other")
 
-        self.tree.insertTopLevelItem(0, self.sceneTreeRoot)
+        self.tree.insertTopLevelItem(0, self.sources)
+        self.tree.insertTopLevelItem(1, self.lenses)
+        self.tree.insertTopLevelItem(2, self.mirrors)
+        self.tree.insertTopLevelItem(3, self.detectors)
+        self.tree.insertTopLevelItem(4, self.other)
 
         self.tree.setSelectionBehavior(QAbstractItemView.SelectItems)
         self.tree.selectionModel().selectionChanged.connect(self.onSelected)

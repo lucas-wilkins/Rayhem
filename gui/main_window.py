@@ -1,10 +1,10 @@
 import os
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
-from PySide6.QtOpenGLWidgets import QOpenGLWidget
 from PySide6.QtGui import Qt, QKeySequence
 
 from gui import appearance
+from gui.element_library import ElementLibrary
 
 from gui.element_tree import ElementTree
 from gui.properties import Properties
@@ -14,7 +14,7 @@ from gui.rendering.GL.scene import Scene
 import json
 import logging
 
-from gui.tree_rendering import TreeRenderer
+from gui.rendering.tree_rendering import TreeRenderer
 
 
 class MainWindow(QMainWindow):
@@ -24,37 +24,54 @@ class MainWindow(QMainWindow):
         # Main GUI Components
         self.elementsTree = ElementTree(self)
         self.properties = Properties(self)
+
+        self.library = ElementLibrary(self)
         self.path_editor = PathEditor(self)
+
         self.glWidget = Scene(self)
 
 
         self.setCentralWidget(self.glWidget)
+        self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.library)
         self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.elementsTree)
         self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.properties)
 
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.path_editor)
 
+        #
         # Menus
+        #
 
         menu = self.menuBar()
 
+        # File Menu
 
         menu_file = menu.addMenu("&File")
 
-        menu_new = menu_file.addAction("&New")
-        menu_new.triggered.connect(self.onNew)
+        file_new = menu_file.addAction("&New")
+        file_new.triggered.connect(self.onNew)
 
-        menu_load = menu_file.addAction("&Load")
-        menu_load.triggered.connect(self.onLoad)
+        file_load = menu_file.addAction("&Load")
+        file_load.triggered.connect(self.onLoad)
 
         menu_file.addSeparator()
 
-        menu_save = menu_file.addAction("&Save")
-        menu_save.setShortcut(QKeySequence("Ctrl+s"))
-        menu_save.triggered.connect(self.onSave)
+        file_save = menu_file.addAction("&Save")
+        file_save.setShortcut(QKeySequence("Ctrl+s"))
+        file_save.triggered.connect(self.onSave)
 
-        menu_saveas = menu_file.addAction("Save &As")
-        menu_saveas.triggered.connect(self.onSaveAs)
+        file_save_as = menu_file.addAction("Save As")
+        file_save_as.triggered.connect(self.onSaveAs)
+
+        window_menu = menu.addMenu("&View")
+
+        window_menu.addAction("Scene Tree")
+        window_menu.addAction("Properties")
+        window_menu.addAction("Component Library")
+        window_menu.addAction("Material Library")
+        window_menu.addAction("Paths")
+
+
 
         self._loaded_file: str | None = None
         self._changes_made = False

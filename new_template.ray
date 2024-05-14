@@ -1,7 +1,12 @@
 {
   "scene": {
-    "class": "root",
-    "data": {},
+    "class": "simulation",
+    "data": {
+      "parameters": {
+        "minimum_distance": 1e-09,
+        "maximum_rays": 10000000
+      }
+    },
     "children": []
   }
 }

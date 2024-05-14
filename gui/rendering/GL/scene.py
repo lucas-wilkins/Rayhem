@@ -11,6 +11,8 @@ from OpenGL.GLU import *
 from gui.rendering.GL.renderable import Renderable
 from gui.rendering.GL.surface import Surface
 
+from gui.appearance import render_background
+
 class Scene(QtOpenGLWidgets.QOpenGLWidget):
 
 
@@ -25,7 +27,7 @@ class Scene(QtOpenGLWidgets.QOpenGLWidget):
         self.view_centre = np.array([0.0, 0.0, 0.0])
         self.view_fov = 60
 
-        self.background_color = (0, 0, 0, 0)
+        self.background_color = render_background
 
         self.min_distance = 0.1
         self.max_distance = 250

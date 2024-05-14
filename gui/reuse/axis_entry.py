@@ -2,11 +2,11 @@ from typing import Sequence
 
 import numpy as np
 
-from PySide6.QtWidgets import QWidget, QDoubleSpinBox, QLabel, QGridLayout
+from PySide6.QtWidgets import QWidget, QLabel, QGridLayout
 from PySide6.QtCore import Signal
 
 from gui.appearance import error_style, normal_style
-from gui.spinboxes import SpatialSpinBox
+from gui.reuse.spinboxes import SpatialSpinBox
 
 
 class AxisEntry(QWidget):
