@@ -1,10 +1,11 @@
 import numpy as np
 from OpenGL.GL import glTranslate, glRotate, glPushMatrix, glPopMatrix, glBegin, glEnd, glVertex, glColor
 from OpenGL import GL
+from PySide6.QtGui import QIcon
 
 from gui.axis_entry import AxisEntry
-from gui.has_gui_element import HasGuiElement
-from gui.has_tree_representation import ElementTreeItem
+from gui.element_tree_item import ElementTreeItem
+from gui.spinboxes import AngleSpinBox
 from gui.translation_entry import TranslationEntry
 from loadsave import DeserialisationError
 
@@ -17,7 +18,7 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QDouble
 _180_over_pi = 180/np.pi
 _pi_over_180 = np.pi / 180
 
-class Transformation(HasGuiElement, ElementTreeItem):
+class Transformation(ElementTreeItem):
     """ Translation used to specify the location of things"""
 
     def __init__(self, angle: float | None = None, axis: np.ndarray | None = None, translation: np.ndarray | None = None):
@@ -35,6 +36,8 @@ class Transformation(HasGuiElement, ElementTreeItem):
         self._visible = False # Show on GL window?
 
         self._update_matrices()
+
+
 
     @staticmethod
     def serialisation_name() -> str:
@@ -201,7 +204,7 @@ class Transformation(HasGuiElement, ElementTreeItem):
         angle_widget.setLayout(angle_layout)
 
         angle_label = QLabel("Angle")
-        angle = QDoubleSpinBox()
+        angle = AngleSpinBox()
         angle.setValue(self.angle_deg)
 
         angle_layout.addWidget(angle_label)
@@ -231,7 +234,7 @@ class Transformation(HasGuiElement, ElementTreeItem):
             self.angle_deg = angle.value()
 
         def onAxisChanged():
-            self.axis = axis_widget.value()
+            self.axis = axis_widget.value
 
         def onTranslationChanged():
             self.translation = translation.value

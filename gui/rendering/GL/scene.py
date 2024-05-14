@@ -21,7 +21,7 @@ class Scene(QtOpenGLWidgets.QOpenGLWidget):
 
         self.view_azimuth = 0.0
         self.view_elevation = 0.0
-        self.view_distance = 5.0
+        self.view_distance = 50.0
         self.view_centre = np.array([0.0, 0.0, 0.0])
         self.view_fov = 60
 

@@ -1,12 +1,12 @@
 import os
 import sys
-from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog
+from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
 from PySide6.QtGui import Qt, QKeySequence
 
 from gui import appearance
 
-from gui.tree import ElementsTree
+from gui.element_tree import ElementTree
 from gui.properties import Properties
 from gui.path_editor.path_editor import PathEditor
 from gui.rendering.GL.scene import Scene
@@ -14,20 +14,18 @@ from gui.rendering.GL.scene import Scene
 import json
 import logging
 
+from gui.tree_rendering import TreeRenderer
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__(None)
 
         # Main GUI Components
-        self.elementsTree = ElementsTree(self)
+        self.elementsTree = ElementTree(self)
         self.properties = Properties(self)
         self.path_editor = PathEditor(self)
         self.glWidget = Scene(self)
-
-        # Show something in the GL renderer - temporary
-        from gui.rendering.GL.color import uniform_coloring
-        from gui.rendering.GL.icosahedron import Icosahedron
-        self.glWidget.add(Icosahedron(edge_colors=uniform_coloring(1, 1, 1), colors=uniform_coloring(0.7, 0, 0.7)))
 
 
         self.setCentralWidget(self.glWidget)
@@ -36,15 +34,21 @@ class MainWindow(QMainWindow):
 
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.path_editor)
 
-        # Menu
+        # Menus
 
         menu = self.menuBar()
 
+
         menu_file = menu.addMenu("&File")
+
+        menu_new = menu_file.addAction("&New")
+        menu_new.triggered.connect(self.onNew)
+
         menu_load = menu_file.addAction("&Load")
         menu_load.triggered.connect(self.onLoad)
 
         menu_file.addSeparator()
+
         menu_save = menu_file.addAction("&Save")
         menu_save.setShortcut(QKeySequence("Ctrl+s"))
         menu_save.triggered.connect(self.onSave)
@@ -56,6 +60,10 @@ class MainWindow(QMainWindow):
         self._changes_made = False
 
         self.updateTitle() # Has to have _loaded_file and _changes_made defined to work
+
+        # Set up rendering links
+        self.glWidget.add(TreeRenderer(self.elementsTree))
+
 
         # Make full screen
         self.showMaximized()
@@ -80,29 +88,59 @@ class MainWindow(QMainWindow):
             self.load(filename)
 
     def updateTitle(self):
-        title_string = appearance.program_name
+        display_name = "" if self._loaded_file is None else f" [{self._loaded_file}]"
+        star = " *" if self._changes_made else ""
 
-        if self._loaded_file is not None:
-            title_string += f" [{os.path.basename(self._loaded_file)}]"
+        title_string = appearance.program_name + display_name + star
 
-        if self._changes_made:
-            title_string += " *"
 
         self.setWindowTitle(title_string)
+
+    def updateEverything(self):
+        self.glWidget.update()
+        self.elementsTree
+        self.updateTitle()
 
     def onAnythingChanged(self):
         """ Called when there has been a change to anything at all"""
         self._changes_made = True
-        self.updateTitle()
+        self.updateEverything()
 
+    def onNew(self):
+        if self._changes_made:
+            msgBox = QMessageBox()
+            msgBox.setText("The simulation has been modified.")
+            msgBox.setInformativeText("Do you want to save your changes?")
+            msgBox.setStandardButtons(QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
+            msgBox.setDefaultButton(QMessageBox.Save)
+            ret = msgBox.exec()
 
-    def onSave(self):
+            if ret == QMessageBox.Save:
+                if self.onSave():
+                    self.new()
+                else:
+                    return
+
+            elif ret == QMessageBox.Discard:
+                self.new()
+
+            elif ret == QMessageBox.Cancel:
+                return
+
+            else:
+                raise RuntimeError("Oh dear! This has never happened to me before!")
+
+        else:
+            self.new()
+
+    def onSave(self) -> bool:
         if self._loaded_file is None:
-            self.onSaveAs()
+            return self.onSaveAs()
         else:
             self.save(self._loaded_file)
+            return True
 
-    def onSaveAs(self):
+    def onSaveAs(self) -> bool:
         if self._loaded_file is None:
             open_directory = os.getcwd()
         else:
@@ -115,10 +153,14 @@ class MainWindow(QMainWindow):
             "Ray Simulations (*.ray)")
 
         if filename == "":
-            return
+            return False
 
         else:
             self.save(filename)
+            return True
+
+    def new(self):
+        self.load("new_template.ray", forget_origin=True)
 
 
     def save(self, filename: str):
@@ -134,7 +176,7 @@ class MainWindow(QMainWindow):
 
             self._loaded_file = filename
             self._changes_made = False
-            self.updateTitle()
+            self.updateEverything()
 
         except Exception as e:
             log = logging.getLogger(self.__class__.__name__)
@@ -142,8 +184,11 @@ class MainWindow(QMainWindow):
             log.exception(e)
 
 
-    def load(self, filename: str):
-        """ Load the program state"""
+    def load(self, filename: str, forget_origin: bool=False):
+        """ Load the program state
+
+        :param forget_origin: load, but forget where the data came from (makes new files configurable easily)
+        """
 
         try:
             with open(filename, 'r') as fid:
@@ -151,9 +196,9 @@ class MainWindow(QMainWindow):
 
                 self.elementsTree.deserialise(data["scene"])
 
-            self._loaded_file = filename
+            self._loaded_file = None if forget_origin else filename
             self._changes_made = False
-            self.updateTitle()
+            self.updateEverything()
 
         except Exception as e:
             log = logging.getLogger(self.__class__.__name__)

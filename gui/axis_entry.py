@@ -6,6 +6,8 @@ from PySide6.QtWidgets import QWidget, QDoubleSpinBox, QLabel, QGridLayout
 from PySide6.QtCore import Signal
 
 from gui.appearance import error_style, normal_style
+from gui.spinboxes import SpatialSpinBox
+
 
 class AxisEntry(QWidget):
     """ GUI representation of a rotation axis"""
@@ -20,9 +22,9 @@ class AxisEntry(QWidget):
         layout.addWidget(QLabel("Y"), 1, 0)
         layout.addWidget(QLabel("Z"), 2, 0)
 
-        self.x = QDoubleSpinBox()
-        self.y = QDoubleSpinBox()
-        self.z = QDoubleSpinBox()
+        self.x = SpatialSpinBox()
+        self.y = SpatialSpinBox()
+        self.z = SpatialSpinBox()
 
         self.x.setSingleStep(0.01)
         self.y.setSingleStep(0.01)

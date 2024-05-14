@@ -1,10 +1,8 @@
 import numpy as np
 
 from loadsave import Serialisable
-from gui.has_gui_element import HasGuiElement
-from gui.has_tree_representation import HasTreeRepresentation
 
-class Surface(Serialisable, HasGuiElement):
+class Surface(Serialisable):
     """ Base class for surface interfaces"""
 
     def get_collision_points(self, local_origins: np.ndarray, local_directions: np.ndarray) -> tuple[np.ndarray, np.ndarray]:

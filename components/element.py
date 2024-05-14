@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QWidget
 
 from components.component import Component
-from gui.has_tree_representation import ElementTreeItem
+from gui.element_tree_item import ElementTreeItem
 
 class Element(ElementTreeItem):
 

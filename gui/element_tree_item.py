@@ -46,3 +46,4 @@ class ElementTreeItem(Serialisable, QTreeWidgetItem, HasMainWindowRepresentation
         widget.setLayout(layout)
 
         return widget
+

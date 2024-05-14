@@ -5,6 +5,8 @@ import numpy as np
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QDoubleSpinBox, QLabel
 from PySide6.QtCore import Signal
 
+from gui.spinboxes import SpatialSpinBox
+
 
 class TranslationEntry(QWidget):
     """ GUI element representing a 3D translation"""
@@ -24,9 +26,9 @@ class TranslationEntry(QWidget):
         self.labels.setLayout(self.labels_layout)
         self.boxes.setLayout(self.boxes_layout)
 
-        self.tx = QDoubleSpinBox()
-        self.ty = QDoubleSpinBox()
-        self.tz = QDoubleSpinBox()
+        self.tx = SpatialSpinBox()
+        self.ty = SpatialSpinBox()
+        self.tz = SpatialSpinBox()
 
         self.tx.setValue(initial_value[0])
         self.ty.setValue(initial_value[1])

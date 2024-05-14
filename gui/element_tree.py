@@ -9,7 +9,7 @@ from loadsave import DeserialisationError
 # Lookup for deserialisation
 _class_lookup: dict[str, type[ElementTreeItem]] = { cls.serialisation_name(): cls for cls in [SceneTreeRoot, Transformation] }
 
-class ElementsTree(QDockWidget):
+class ElementTree(QDockWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -56,6 +56,9 @@ class ElementsTree(QDockWidget):
         for item in self.tree.selectedItems():
             self.parent.properties.setWidget(item.settingsWidget())
 
+    def selectRoot(self):
+        self.parent.properties.setWidget(self.sceneTreeRoot.settingsWidget())
+
 
     def deserialise(self, data: dict):
         # Traverse the tree
@@ -64,6 +67,9 @@ class ElementsTree(QDockWidget):
         self.sceneTreeRoot = new_tree
         self.tree.clear()
         self.tree.insertTopLevelItem(0, new_tree)
+
+        self.selectRoot()
+        self.tree.expandAll()
 
 
     def _deserialise(self, data: dict):
