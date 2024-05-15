@@ -1,4 +1,5 @@
-from components.element import ElementTreeItem
+from components.element import Element
 
-class Source(ElementTreeItem):
+
+class Source(Element):
     pass

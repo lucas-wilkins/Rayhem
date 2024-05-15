@@ -1,14 +1,15 @@
 from components.sources.source import Source
 
-class PointSource(Source):
+
+class SingleRay(Source):
+
     def __init__(self):
         super().__init__()
 
     @staticmethod
     def library_name() -> str:
-        return "Point Source"
+        return "Single Ray"
 
     @staticmethod
     def library_description() -> str:
-        return "Simple point source."
-
+        return "Single ray."

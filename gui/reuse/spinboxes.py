@@ -11,6 +11,15 @@ class SpatialSpinBox(QDoubleSpinBox):
         self.setMinimum(-1e12)
         self.setSingleStep(0.1)
 
+
+class DistanceSpinBox(QDoubleSpinBox):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setMaximum(1e12)
+        self.setMinimum(0)
+        self.setSingleStep(0.1)
+
+
 class AngleSpinBox(QDoubleSpinBox):
     def __init__(self, parent=None):
         super().__init__(parent)

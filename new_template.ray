@@ -2,9 +2,14 @@
   "scene": {
     "class": "simulation",
     "data": {
-      "parameters": {
+      "simulation_parameters": {
         "minimum_distance": 1e-09,
-        "maximum_rays": 10000000
+        "maximum_rays": 10000000,
+        "minimum_intensity": 1e-09
+      },
+      "rendering_parameters": {
+        "show_escaped": false,
+        "escaped_length": 10
       }
     },
     "children": []

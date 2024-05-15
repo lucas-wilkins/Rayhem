@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import QDockWidget, QTreeWidget, QAbstractItemView
 from PySide6.QtGui import Qt
+from PySide6 import QtCore
 
 from gui.element_tree_root import ElementTreeRoot
 from components.transformation import Transformation
@@ -20,6 +21,14 @@ class ElementTree(QDockWidget):
 
         self.tree = QTreeWidget()
         self.tree.setHeaderHidden(True)
+        self.tree.setDragDropMode(QAbstractItemView.InternalMove)
+        self.tree.setDragEnabled(True)
+        self.tree.setAcceptDrops(True)
+        self.tree.setDropIndicatorShown(True)
+
+        # TODO update scene on drag
+        # self.tree.model().dataChanged.connect(self.onChangeStructure)
+        # self.tree.model().layoutChanged.connect(self.onChangeStructure)
 
         self.sceneTreeRoot = ElementTreeRoot()
 
@@ -28,10 +37,11 @@ class ElementTree(QDockWidget):
         self.tree.setSelectionBehavior(QAbstractItemView.SelectItems)
         self.tree.selectionModel().selectionChanged.connect(self.onSelected)
 
-
         self.setWidget(self.tree)
 
-
+    def onChangeStructure(self):
+        print("Structure changed")
+        self.onAnythingChanged()
 
     def onAnythingChanged(self):
         self.parent.onAnythingChanged()
@@ -41,9 +51,22 @@ class ElementTree(QDockWidget):
         for item in self.tree.selectedItems():
             self.parent.properties.setWidget(item.settingsWidget())
 
+    def _selected_draggable(self):
+        """ Get selected item, if nothing is selected return root """
+        return_item = self.sceneTreeRoot
+        for item in self.tree.selectedItems():
+            if item.flags() & QtCore.Qt.ItemIsDragEnabled:
+                return_item = item
+
+        return return_item
+
     def selectRoot(self):
         self.parent.properties.setWidget(self.sceneTreeRoot.settingsWidget())
 
+    def addElement(self, element: ElementTreeItem):
+        self._selected_draggable().addChild(element)
+
+        self.onAnythingChanged()
 
     def deserialise(self, data: dict):
         # Traverse the tree
