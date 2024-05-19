@@ -1,4 +1,5 @@
-from PySide6.QtWidgets import QDockWidget, QTreeWidget, QAbstractItemView
+from PySide6.QtWidgets import QDockWidget, QTreeWidget, QAbstractItemView, QWidget, QVBoxLayout, QSizePolicy, \
+    QSpacerItem
 from PySide6.QtGui import Qt
 from PySide6 import QtCore
 
@@ -44,31 +45,55 @@ class ElementTree(QDockWidget):
         self.onAnythingChanged()
 
     def onAnythingChanged(self):
+        """ General update """
         self.parent.onAnythingChanged()
 
     def onSelected(self):
+        """ Actions to happen when a new selection is made in the tree"""
+
         # Should only be one item
         for item in self.tree.selectedItems():
-            self.parent.properties.setWidget(item.settingsWidget())
+            new_widget = QWidget()
+            new_layout = QVBoxLayout()
+            new_widget.setLayout(new_layout)
 
-    def _selected_draggable(self):
-        """ Get selected item, if nothing is selected return root """
-        return_item = self.sceneTreeRoot
+            new_layout.addWidget(item.settingsWidget())
+            new_layout.addSpacerItem(QSpacerItem(0,0,QSizePolicy.Minimum, QSizePolicy.Expanding))
+
+            self.parent.properties.setWidget(new_widget)
+
+            return
+
+    def singleSelectedItem(self):
+        """ First of multiple selected items"""
         for item in self.tree.selectedItems():
-            if item.flags() & QtCore.Qt.ItemIsDragEnabled:
-                return_item = item
+            return item
+    def closestBranchNode(self):
+        """ Find closest not leaf node to the current selection"""
+        item = self.singleSelectedItem()
+        if item is None:
+            return self.sceneTreeRoot
+        else:
+            return self._closestBranchNode(item)
 
-        return return_item
+    def _closestBranchNode(self, node: ElementTreeItem):
+        """ Internal method for finding non-leaf node"""
+        if node.flags() & QtCore.Qt.ItemIsDropEnabled:
+            return node
+        else:
+            return self._closestBranchNode(node.parent())
 
     def selectRoot(self):
         self.parent.properties.setWidget(self.sceneTreeRoot.settingsWidget())
 
     def addElement(self, element: ElementTreeItem):
-        self._selected_draggable().addChild(element)
-
+        """ Add to the tree """
+        self.closestBranchNode().addChild(element)
         self.onAnythingChanged()
 
     def deserialise(self, data: dict):
+        """ Deserialise tree data and set """
+
         # Traverse the tree
         new_tree = self._deserialise(data)
 

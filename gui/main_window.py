@@ -7,6 +7,7 @@ from gui import appearance
 from gui.element_library import ElementLibrary
 
 from gui.element_tree import ElementTree
+from gui.element_tree_item import ElementTreeItem
 from gui.properties import Properties
 from gui.path_editor.path_editor import PathEditor
 from gui.rendering.GL.scene import Scene
@@ -16,10 +17,14 @@ import logging
 
 from gui.rendering.tree_rendering import TreeRenderer
 
+from media import icons
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__(None)
+
+        # Main window appearance
+        self.setWindowIcon(icons.transform)
 
         # Main GUI Components
         self.elementsTree = ElementTree(self)
@@ -104,6 +109,7 @@ class MainWindow(QMainWindow):
         else:
             self.load(filename)
 
+
     def updateTitle(self):
         display_name = "" if self._loaded_file is None else f" [{self._loaded_file}]"
         star = " *" if self._changes_made else ""
@@ -115,7 +121,7 @@ class MainWindow(QMainWindow):
 
     def updateEverything(self):
         self.glWidget.update()
-        self.elementsTree
+        # self.elementsTree
         self.updateTitle()
 
     def onAnythingChanged(self):

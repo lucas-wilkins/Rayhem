@@ -2,6 +2,7 @@ import numpy as np
 from OpenGL.GL import glTranslate, glRotate, glPushMatrix, glPopMatrix, glBegin, glEnd, glVertex, glColor
 from OpenGL import GL
 
+from components.simulation_data import ComponentAndTransform, SourceAndTransform
 from gui.reuse.axis_entry import AxisEntry
 from gui.element_tree_item import ElementTreeItem
 from gui.reuse.spinboxes import AngleSpinBox
@@ -14,6 +15,8 @@ from scipy.spatial.transform import Rotation
 
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox
 
+from media import icons
+
 _180_over_pi = 180/np.pi
 _pi_over_180 = np.pi / 180
 
@@ -24,6 +27,7 @@ class Transformation(ElementTreeItem):
         self.debug_id = unique_id()
 
         ElementTreeItem.__init__(self,f"Transformation {self.debug_id}")
+        self.setIcon(0, icons.transform)
 
         self._angle = 0.0 if angle is None else angle
         self._axis = np.array([0.0, 0.0, 1.0]) if axis is None else axis
@@ -129,23 +133,6 @@ class Transformation(ElementTreeItem):
         self.rotation = r.as_matrix()
         self.inv_rotation = r.inv().as_matrix()
 
-    def forward_point_transform(self, points: np.ndarray):
-        """ Transform points from local frame to parent frame"""
-        rotated = np.dot(points, self.rotation)
-        return rotated + self.translation
-
-    def reverse_point_transform(self, points: np.ndarray):
-        """ Transform points from parent frame to local frame"""
-        translated = points - self.translation
-        return np.dot(translated, self.inv_rotation)
-
-    def forward_direction_transform(self, directions: np.ndarray):
-        """ Transform directions from local frame to parent frame"""
-        return np.dot(directions, self.rotation)
-
-    def reverse_direction_transform(self, directions: np.ndarray):
-        """ Transform directions from parent frame to local frame"""
-        return np.dot(directions, self.inv_rotation)
 
     def gl_in(self):
 
@@ -187,6 +174,37 @@ class Transformation(ElementTreeItem):
 
     def __repr__(self):
         return f"Transformation[{self.debug_id}]"
+
+    def transformed_components(self) -> list[ComponentAndTransform]:
+        output = []
+        for child_node in self.children:
+            for child_component in child_node.transformed_components():
+                # Forward, apply rotation to child first, then translation
+                rotation = np.dot(self.rotation, child_component.forward_rotation)
+                translation = self.translation + np.dot(self.rotation, child_component.forward_translation)
+
+                # Forward, apply inverse translation to child first, then inverse rotation
+                inv_rotation = np.dot(child_component.backward_rotation, self.inv_rotation)
+                inv_translation = np.dot(child_component.backward_rotation, child_component.backward_translation - self.translation)
+
+                output.append(ComponentAndTransform(child_component.component, rotation, inv_rotation, translation, inv_translation))
+
+        return output
+
+    def transformed_sources(self) -> list[SourceAndTransform]:
+        output = []
+        for child_node in self.children:
+            for child_source in child_node.transformed_sources():
+                rotation = np.dot(self.rotation, child_source.forward_rotation)
+                translation = self.translation + np.dot(self.rotation, child_source.forward_translation)
+                inv_rotation = np.dot(child_source.backward_rotation, self.inv_rotation)
+                inv_translation = np.dot(child_source.backward_rotation,
+                                         child_source.backward_translation - self.translation)
+
+                output.append(SourceAndTransform(child_source.source, rotation, inv_rotation, translation,
+                                                    inv_translation))
+
+        return output
 
     def settingsWidget(self):
 

@@ -9,3 +9,5 @@ class Properties(QDockWidget):
         self.setWindowTitle("Properties")
 
         self.setWidget(QLabel("Test Widget"))
+
+        

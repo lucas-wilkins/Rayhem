@@ -1,4 +1,7 @@
+from PySide6.QtWidgets import QWidget
+
 from components.sources.source import Source
+from gui.reuse.spectral_distribution import SpectralDistributionCombo
 
 
 class SingleRay(Source):
@@ -13,3 +16,8 @@ class SingleRay(Source):
     @staticmethod
     def library_description() -> str:
         return "Single ray."
+
+    def settingsWidget(self):
+        return SpectralDistributionCombo()
+
+

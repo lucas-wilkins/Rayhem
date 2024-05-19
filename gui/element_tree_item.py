@@ -36,6 +36,12 @@ class ElementTreeItem(Serialisable, QTreeWidgetItem, HasMainWindowRepresentation
         """ Children of this object """
         return [self.child(i) for i in range(self.childCount())]
 
+    def transformed_components(self) -> list["ComponentAndTransform"]:
+        raise NotImplementedError(f"transformed_components is not implemented for {self.__class__}")
+
+    def transformed_sources(self) -> list["SourceAndTransform"]:
+        raise NotImplementedError(f"transformed_sources is not implemented for {self.__class__}")
+
     def settingsWidget(self):
         widget = QWidget()
         label = QLabel(self.debug_name)

@@ -1,3 +1,4 @@
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QWidget
 from PySide6.QtCore import Qt
 
@@ -9,7 +10,7 @@ class Element(ElementTreeItem):
 
     def __init__(self):
         super().__init__(self.library_name())
-        self.setFlags(self.flags() ^ Qt.ItemIsDropEnabled)
+        self.setFlags(self.flags() & ~Qt.ItemIsDropEnabled)
 
 
     @staticmethod
@@ -21,12 +22,17 @@ class Element(ElementTreeItem):
         """ Description to use in the library"""
 
     @staticmethod
+    def library_icon() -> QIcon | None:
+        """ Icon to show in the library """
+
+    @staticmethod
     def docs() -> str:
         """ Docs to show when help is requested """
 
-    def components(self) -> list[Component]:
-        raise NotImplementedError(f"components not implemented for {self.__class__}")
 
     @staticmethod
     def material_surface_selection() -> QWidget:
         pass
+
+    def __repr__(self):
+        return self.__class__.__name__

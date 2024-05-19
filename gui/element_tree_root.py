@@ -35,6 +35,12 @@ class ElementTreeRoot(ElementTreeItem):
         rendering_parameters = RenderingParameters.deserialise(data["rendering_parameters"])
         return ElementTreeRoot(simulation_parameters, rendering_parameters)
 
+    def transformed_components(self) -> list["ComponentAndTransform"]:
+        return [comp for child in self.children for comp in child.transformed_components()]
+
+    def transformed_sources(self) -> list["SourceAndTransform"]:
+        return [comp for child in self.children for comp in child.transformed_sources()]
+
     def settingsWidget(self):
         widget = QWidget()
         layout = QGridLayout()

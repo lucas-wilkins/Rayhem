@@ -8,6 +8,7 @@ class ElementLibraryEntry(QTreeWidgetItem):
 
         self.cls = cls
         super().__init__([cls.library_name(), cls.library_description()])
+        self.setIcon(0, cls.library_icon())
 
     def create(self):
         return self.cls()
