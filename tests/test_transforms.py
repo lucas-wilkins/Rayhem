@@ -2,8 +2,8 @@ import pytest
 
 import numpy as np
 
-from components.sources.source import Source
-from components.transformation import Transformation
+from src.components.sources.source import Source
+from src.components.transformation import Transformation
 from tests.dummy_element import DummyElement
 
 trans_list = [

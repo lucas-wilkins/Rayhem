@@ -1,6 +1,6 @@
-from components.component import Component
-from components.element import Element
-from components.simulation_data import ComponentAndTransform
+from src.components.component import Component
+from src.components.element import Element
+from src.components.simulation_data import ComponentAndTransform
 
 
 class DummyComponent(Component):
