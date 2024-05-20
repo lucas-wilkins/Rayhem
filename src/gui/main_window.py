@@ -14,7 +14,7 @@ from gui.properties import Properties
 from gui.path_editor.path_editor import PathEditor
 from gui.rendering.GL.scene import Scene
 from gui.rendering.tree_rendering import TreeRenderer
-from media import icons
+from media.icons import icons
 
 
 class MainWindow(QMainWindow):
@@ -22,7 +22,7 @@ class MainWindow(QMainWindow):
         super().__init__(None)
 
         # Main window appearance
-        self.setWindowIcon(icons.transform)
+        self.setWindowIcon(icons["logo"])
 
         # Main GUI Components
         self.elementsTree = ElementTree(self)
@@ -226,20 +226,4 @@ class MainWindow(QMainWindow):
             log.error(f"Failed to load file '{filename}'")
             log.exception(e)
 
-def run_gui():
-    app = QApplication([])
 
-    print(QStyleHints.colorScheme)
-
-    window = MainWindow()
-
-    window.load("test.ray")
-
-    window.show()
-
-    sys.exit(app.exec())
-
-
-
-if __name__ == "__main__":
-    run_gui()

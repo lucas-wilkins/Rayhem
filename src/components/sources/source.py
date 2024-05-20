@@ -3,7 +3,7 @@ from PySide6.QtGui import QIcon
 from src.components.element import Element
 from src.components.simulation_data import SourceAndTransform
 
-from media import icons
+from media.icons import icons
 
 
 class Source(Element):
@@ -19,4 +19,5 @@ class Source(Element):
 
     @staticmethod
     def library_icon() -> QIcon | None:
-        return icons.source
+        return icons["source"]
+

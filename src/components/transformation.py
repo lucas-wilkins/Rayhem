@@ -12,9 +12,9 @@ from gui.element_tree_item import ElementTreeItem
 from gui.reuse.spinboxes import AngleSpinBox
 from gui.reuse.translation_entry import TranslationEntry
 from loadsave import DeserialisationError
-from src.components.ids import unique_id
+from components.ids import unique_id
 
-from src.media import icons
+from media.icons import icons
 
 _180_over_pi = 180/np.pi
 _pi_over_180 = np.pi / 180
@@ -26,7 +26,7 @@ class Transformation(ElementTreeItem):
         self.debug_id = unique_id()
 
         ElementTreeItem.__init__(self,f"Transformation {self.debug_id}")
-        self.setIcon(0, icons.transform)
+        self.setIcon(0, icons["transform"])
 
         self._angle = 0.0 if angle is None else angle
         self._axis = np.array([0.0, 0.0, 1.0]) if axis is None else axis

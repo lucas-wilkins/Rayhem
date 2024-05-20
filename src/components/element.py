@@ -10,6 +10,7 @@ class Element(ElementTreeItem):
     def __init__(self):
         super().__init__(self.library_name())
         self.setFlags(self.flags() & ~Qt.ItemIsDropEnabled)
+        self.setIcon(0, self.library_icon())
 
 
     @staticmethod
