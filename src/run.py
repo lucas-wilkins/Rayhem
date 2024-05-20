@@ -12,7 +12,7 @@ from src.gui.main_window import MainWindow
 
 window = MainWindow()
 
-window.load("test.ray")
+window.load("dev_initial.ray")
 
 window.show()
 
