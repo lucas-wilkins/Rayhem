@@ -10,7 +10,10 @@ class Element(ElementTreeItem):
     def __init__(self):
         super().__init__(self.library_name())
         self.setFlags(self.flags() & ~Qt.ItemIsDropEnabled)
-        self.setIcon(0, self.library_icon())
+
+        icon = self.library_icon()
+        if icon is not None:
+            self.setIcon(0, icon)
 
 
     @staticmethod
@@ -24,6 +27,7 @@ class Element(ElementTreeItem):
     @staticmethod
     def library_icon() -> QIcon | None:
         """ Icon to show in the library """
+        return None
 
     @staticmethod
     def docs() -> str:

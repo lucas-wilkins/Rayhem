@@ -34,7 +34,7 @@ class Transformer:
         return np.dot(directions, self.inv_rotation)
 
 
-class ComponentAndTransform:
+class ComponentAndTransform(Transformer):
     def __init__(self,
                  component: "Component",
                  forward_rotation: np.ndarray = np.eye(3),
