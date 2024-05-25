@@ -2,7 +2,8 @@ from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QComboBox, QWidget, QHBoxLayout, QDoubleSpinBox, QPushButton, QLabel
 
 from spectral_sampling.defaults import default_spectral_sampling_methods
-from spectral_sampling.spectral_distribution import SpectralDistribution, Monochromatic
+from spectral_sampling.spectral_distribution import SpectralDistribution
+from spectral_sampling.spectral_distribution_singleton import distributions, SpectralDistributionSpecification
 
 
 class SpectralDistributionCombo(QWidget):
@@ -32,19 +33,13 @@ class SpectralDistributionCombo(QWidget):
 
         self.n_default = len(default_spectral_sampling_methods)
 
-        self.combo.addItem("Monochromatic")
-
         self.mainLayout.addWidget(self.combo)
         self.mainLayout.addWidget(self.wavelength)
         self.mainLayout.addWidget(self.wavelength_label)
         self.mainLayout.addWidget(self.new_button)
 
-        for item in default_spectral_sampling_methods:
-            self.combo.addItem(item.name)
-
-        if self._spectral_sampling_window is not None:
-            for item in self._spectral_sampling_window.customDistributionNames():
-                self.combo.addItem(item.name)
+        for name in distributions.distribution_names():
+            self.combo.addItem(name)
 
         self.combo.currentIndexChanged.connect(self.onSelected)
 
@@ -60,13 +55,14 @@ class SpectralDistributionCombo(QWidget):
 
         self.onChanged.emit()
 
+    def getSpectralDistributionSpec(self) -> SpectralDistributionSpecification:
+
+        index = self.combo.currentIndex()
+        wavelength = self.wavelength.value() if index == 0 else None
+        return SpectralDistributionSpecification(index, wavelength)
+
     def getDistribution(self) -> SpectralDistribution:
         """ Get the selected distribution """
 
-        index = self.combo.currentIndex()
-        if index == 0:
-            return Monochromatic(self.wavelength.value())
-        elif 0 < index < self.n_default + 1:
-            return default_spectral_sampling_methods[index-1]
-        else:
-            raise NotImplementedError("Custom distributions not supported yet")
+        return distributions.get_distribution(self.getSpectralDistributionSpec())
+

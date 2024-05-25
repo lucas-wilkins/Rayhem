@@ -2,7 +2,7 @@ from spectral_sampling.spectral_distribution import SpectralDistribution
 
 def _equal_distribution(wavelengths):
     n = len(wavelengths)
-    return [(comp, 1/n) for comp in wavelengths]
+    return [[comp, 1/n] for comp in wavelengths]
 
 def _wavelength_strings(wavelengths):
     return ", ".join([str(int(wavelength)) + "nm" for wavelength in wavelengths])

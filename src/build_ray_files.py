@@ -19,14 +19,14 @@ testNode3 = Transformation()
 testNode21 = Transformation()
 testNode22 = Transformation()
 
-window.elementsTree.sceneTreeRoot.addChild(testNode1)
-window.elementsTree.sceneTreeRoot.addChild(testNode2)
-window.elementsTree.sceneTreeRoot.addChild(testNode3)
+window.element_tree.sceneTreeRoot.addChild(testNode1)
+window.element_tree.sceneTreeRoot.addChild(testNode2)
+window.element_tree.sceneTreeRoot.addChild(testNode3)
 
 testNode2.addChild(testNode21)
 testNode2.addChild(testNode22)
 
-window.save("test.ray")
+window.save("dev_initial.ray")
 
 window.new()
 

@@ -15,6 +15,10 @@ class SingleRay(Source):
     def library_description() -> str:
         return "Single ray."
 
+    @staticmethod
+    def serialisation_name() -> str:
+        return "single_ray"
+
     def settingsWidget(self):
         return SpectralDistributionCombo()
 

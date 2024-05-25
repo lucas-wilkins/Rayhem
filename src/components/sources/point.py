@@ -16,6 +16,10 @@ class PointSource(Source):
     def library_description() -> str:
         return "Simple point source."
 
+    @staticmethod
+    def serialisation_name() -> str:
+        return "point_source"
+
     def settingsWidget(self):
         widget = QWidget()
         layout = QGridLayout()

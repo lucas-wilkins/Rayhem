@@ -104,7 +104,7 @@ class ElementLibrary(QDockWidget):
         for item in self.tree.selectedItems():
             if isinstance(item, ElementLibraryEntry):
                 element = item.create()
-                self.parent.elementsTree.addElement(element)
+                self.parent.element_tree.addElement(element)
 
 
     def onAbout(self):

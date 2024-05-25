@@ -3,13 +3,17 @@ from PySide6.QtWidgets import QDockWidget, QTreeWidget, QAbstractItemView, QWidg
 from PySide6.QtGui import Qt
 from PySide6 import QtCore
 
+from components.simulation_data import SimulationData
+from components.sources.point import PointSource
+from components.sources.single_ray import SingleRay
 from gui.element_tree_root import ElementTreeRoot
 from components.transformation import Transformation
 from components.element import ElementTreeItem
 from loadsave import DeserialisationError
 
 # Lookup for deserialisation
-_class_lookup: dict[str, type[ElementTreeItem]] = {cls.serialisation_name(): cls for cls in [ElementTreeRoot, Transformation]}
+_classes = [ElementTreeRoot, Transformation, PointSource, SingleRay]
+_class_lookup: dict[str, type[ElementTreeItem]] = {cls.serialisation_name(): cls for cls in _classes}
 
 class ElementTree(QDockWidget):
     def __init__(self, parent):
@@ -90,6 +94,14 @@ class ElementTree(QDockWidget):
         """ Add to the tree """
         self.closestBranchNode().addChild(element)
         self.onAnythingChanged()
+
+    def simulation_data(self) -> SimulationData:
+        """ Gather all components together as a simulation data object """
+
+        sources = self.sceneTreeRoot.transformed_sources()
+        components = self.sceneTreeRoot.transformed_components()
+
+        return SimulationData(sources=sources, components=components)
 
     def deserialise(self, data: dict):
         """ Deserialise tree data and set """

@@ -14,7 +14,9 @@ from gui.properties import Properties
 from gui.path_editor.path_editor import PathEditor
 from gui.rendering.GL.scene import Scene
 from gui.rendering.tree_rendering import TreeRenderer
+from gui.spectral_sampling import SpectralSamplingWindow
 from media.icons import icons
+from spectral_sampling.spectral_distribution_singleton import distributions
 
 
 class MainWindow(QMainWindow):
@@ -25,10 +27,11 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(icons["logo"])
 
         # Main GUI Components
-        self.elementsTree = ElementTree(self)
+        self.library = ElementLibrary(self)
+        self.element_tree = ElementTree(self)
         self.properties = Properties(self)
 
-        self.library = ElementLibrary(self)
+        self.spectral_distributions = SpectralSamplingWindow(self)
         self.path_editor = PathEditor(self)
 
         self.glWidget = Scene(self)
@@ -36,9 +39,10 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(self.glWidget)
         self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.library)
-        self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.elementsTree)
+        self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.element_tree)
         self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.properties)
 
+        self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.spectral_distributions)
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.path_editor)
 
         #
@@ -72,6 +76,7 @@ class MainWindow(QMainWindow):
         window_menu.addAction("Properties")
         window_menu.addAction("Component Library")
         window_menu.addAction("Material Library")
+        window_menu.addAction("Spectral Sampling")
         window_menu.addAction("Paths")
 
 
@@ -82,7 +87,7 @@ class MainWindow(QMainWindow):
         self.updateTitle() # Has to have _loaded_file and _changes_made defined to work
 
         # Set up rendering links
-        self.glWidget.add(TreeRenderer(self.elementsTree))
+        self.glWidget.add(TreeRenderer(self.element_tree))
 
 
         # Make full screen
@@ -188,7 +193,8 @@ class MainWindow(QMainWindow):
         """ Save the program state"""
 
         data = {
-            "scene": self.elementsTree.serialise()
+            "scene": self.element_tree.serialise(),
+            "spectral_distributions": distributions.serialise()
         }
 
         try:
@@ -215,7 +221,8 @@ class MainWindow(QMainWindow):
             with open(filename, 'r') as fid:
                 data = json.load(fid)
 
-                self.elementsTree.deserialise(data["scene"])
+                distributions.deserialise(data["spectral_distributions"])
+                self.element_tree.deserialise(data["scene"])
 
             self._loaded_file = None if forget_origin else filename
             self._changes_made = False
