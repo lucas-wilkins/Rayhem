@@ -2,7 +2,7 @@ from loadsave import Serialisable
 from components.ids import unique_id
 
 class Component(Serialisable):
-    """ Base class for anything in the scene tree """
+    """ Object that represents a component that can interact with light, a collection of interfaces """
 
     def __init__(self, id: int | None = None):
         self.id = unique_id() if id is None else id

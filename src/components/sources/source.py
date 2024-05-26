@@ -21,3 +21,6 @@ class Source(Element):
     def library_icon() -> QIcon | None:
         return icons["source"]
 
+    def create_rays(self):
+        pass
+

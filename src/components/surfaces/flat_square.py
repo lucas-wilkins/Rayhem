@@ -1,6 +1,6 @@
 import numpy as np
 
-from components.surfaces.surface import Surface
+from components.surface import Surface
 
 class FlatSquare(Surface):
     """ Just a square in the local xy frame, centred at the origin"""

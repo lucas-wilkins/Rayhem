@@ -12,7 +12,6 @@ class RayBundle:
                  wavelengths: np.ndarray,
                  polarisation: np.ndarray,
                  polarisation_amount: np.ndarray,
-                 last_element: np.ndarray | None,
                  escaped: np.ndarray | None):
 
         self.origins = origins
@@ -22,13 +21,6 @@ class RayBundle:
         self.polarisation = polarisation
         self.polarisation_amount = polarisation_amount
 
-        if last_element is None:
-            self.last_element = -np.ones((self.origins.shape[0],), dtype=int)
-
         if escaped is None:
             self.escaped = np.zeros((self.origins.shape[0],), dtype=bool)
-
-    def propagate(self, tree: SceneTree, path: Path | None, remove_escapees: bool):
-        """ Main propagation algorithm """
-        pass
 
