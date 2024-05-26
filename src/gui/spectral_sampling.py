@@ -1,6 +1,9 @@
 from PySide6.QtWidgets import QDockWidget, QWidget, QHBoxLayout, QComboBox, QPushButton, QVBoxLayout, QSpacerItem, \
     QSizePolicy
 import matplotlib
+
+from gui.rayhem_dock_window import RayhemDockWidget
+
 matplotlib.use('QtAgg')
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -11,7 +14,7 @@ import matplotlib.pyplot as plt
 from spectral_sampling.spectral_distribution_singleton import distributions, SpectralDistributionSpecification
 
 
-class SpectralSamplingWindow(QDockWidget):
+class SpectralSamplingWindow(RayhemDockWidget):
     """ Window to display the spectral sampling settings """
 
     def __init__(self, parent=None):

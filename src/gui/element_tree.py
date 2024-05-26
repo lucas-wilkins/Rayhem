@@ -9,17 +9,18 @@ from components.sources.single_ray import SingleRay
 from gui.element_tree_root import ElementTreeRoot
 from components.transformation import Transformation
 from components.element import ElementTreeItem
+from gui.rayhem_dock_window import RayhemDockWidget
 from loadsave import DeserialisationError
 
 # Lookup for deserialisation
 _classes = [ElementTreeRoot, Transformation, PointSource, SingleRay]
 _class_lookup: dict[str, type[ElementTreeItem]] = {cls.serialisation_name(): cls for cls in _classes}
 
-class ElementTree(QDockWidget):
+class ElementTree(RayhemDockWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.parent = parent
+        # self.parent = parent
 
         self.setAllowedAreas(Qt.DockWidgetArea.LeftDockWidgetArea | Qt.DockWidgetArea.RightDockWidgetArea)
         self.setWindowTitle("Elements")
@@ -50,7 +51,7 @@ class ElementTree(QDockWidget):
 
     def onAnythingChanged(self):
         """ General update """
-        self.parent.onAnythingChanged()
+        self.parent().onAnythingChanged()
 
     def onSelected(self):
         """ Actions to happen when a new selection is made in the tree"""
@@ -64,7 +65,7 @@ class ElementTree(QDockWidget):
             new_layout.addWidget(item.settingsWidget())
             new_layout.addSpacerItem(QSpacerItem(0,0,QSizePolicy.Minimum, QSizePolicy.Expanding))
 
-            self.parent.properties.setWidget(new_widget)
+            self.parent().properties.setWidget(new_widget)
 
             return
 
@@ -88,7 +89,7 @@ class ElementTree(QDockWidget):
             return self._closestBranchNode(node.parent())
 
     def selectRoot(self):
-        self.parent.properties.setWidget(self.sceneTreeRoot.settingsWidget())
+        self.parent().properties.setWidget(self.sceneTreeRoot.settingsWidget())
 
     def addElement(self, element: ElementTreeItem):
         """ Add to the tree """

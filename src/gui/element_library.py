@@ -3,6 +3,7 @@ from PySide6.QtWidgets import QDockWidget, QTreeWidget, QAbstractItemView, QTree
 from PySide6.QtGui import Qt
 
 from gui.element_library_entry import ElementLibraryEntry
+from gui.rayhem_dock_window import RayhemDockWidget
 
 
 class ElementLibraryGroup(QTreeWidgetItem):
@@ -12,11 +13,11 @@ class ElementLibraryGroup(QTreeWidgetItem):
         self.name = name
 
 
-class ElementLibrary(QDockWidget):
+class ElementLibrary(RayhemDockWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.parent = parent
+        # self.parent = parent
 
         self.setAllowedAreas(Qt.DockWidgetArea.LeftDockWidgetArea | Qt.DockWidgetArea.RightDockWidgetArea)
         self.setWindowTitle("Elements")
@@ -83,7 +84,7 @@ class ElementLibrary(QDockWidget):
 
 
     def onAnythingChanged(self):
-        self.parent.onAnythingChanged()
+        self.parent().onAnythingChanged()
 
 
     def onSelected(self):
@@ -104,7 +105,7 @@ class ElementLibrary(QDockWidget):
         for item in self.tree.selectedItems():
             if isinstance(item, ElementLibraryEntry):
                 element = item.create()
-                self.parent.element_tree.addElement(element)
+                self.parent().element_tree.addElement(element)
 
 
     def onAbout(self):

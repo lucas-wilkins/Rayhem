@@ -1,7 +1,10 @@
 from PySide6.QtWidgets import QDockWidget, QLabel
 from PySide6.QtGui import Qt
 
-class Properties(QDockWidget):
+from gui.rayhem_dock_window import RayhemDockWidget
+
+
+class Properties(RayhemDockWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
