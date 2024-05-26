@@ -45,10 +45,10 @@ class SingleRay(Source):
 
     def create_rays(self) -> SourceRays:
 
-        origin = np.zeros((3, 1), dtype=float)
+        origin = np.zeros((1, 3), dtype=float)
 
-        direction = np.zeros((3, 1), dtype=float)
-        direction[2] = 1.0
+        direction = np.zeros((1, 3), dtype=float)
+        direction[:, 2] = 1.0
 
         intensity = np.ones((1,))
 

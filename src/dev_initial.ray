@@ -99,6 +99,15 @@
           }
         },
         "children": []
+      },
+      {
+        "class": "single_ray",
+        "data": {
+          "spectral_distribution": {
+            "index": 1
+          }
+        },
+        "children": []
       }
     ]
   },

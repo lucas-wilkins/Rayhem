@@ -146,6 +146,8 @@ class Transformation(ElementTreeItem):
     def gl_out(self):
         glPopMatrix()
 
+
+
     def render(self):
         """ Render: show a representation of the local x,y,z coordinate system """
         if True:# self.visible:

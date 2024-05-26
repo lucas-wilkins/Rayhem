@@ -24,36 +24,64 @@ class RayRenderer(Renderable):
     def rays(self, value: list[RayBundle]):
         self._rays = value
 
+
     def render_solid(self):
         # Ray rendering
 
-        # Render the escaped rays
+        glEnableClientState(GL_VERTEX_ARRAY)
+        glEnableClientState(GL_COLOR_ARRAY)
+
         for ray_bundle in self._rays:
+            print(f"rendering {len(ray_bundle.escaped)} rays")
+
+
+            #
+            # Render the escaped rays
+            #
             wls = ray_bundle.wavelengths[ray_bundle.escaped]
+            print(f"{len(wls)} escaped")
+
 
             start = ray_bundle.origins[ray_bundle.escaped, :]
             end = start + ray_bundle.directions[ray_bundle.escaped, :] * self.rendering_parameters.escaped_length
 
             # This will interleave the two arrays of points
-            vertices = np.concatenate((start, end), axis=1).reshape(-1, 3)
+            vertices = np.concatenate((start, end), axis=1).reshape(-1).astype(np.float32)
 
             # colours from the colour scheme
-            colors = self.colour_scheme.wavelength_to_rgba(wls)
+            raw_colors = self.colour_scheme.wavelength_to_rgba(wls).astype(np.float32)
+            colors = np.concatenate((raw_colors, raw_colors), axis=1).reshape(-1)
+
+            #
+            # # X - red
+            # glBegin(GL_LINES)
+            # glColor(1,0,0)
+            # glVertex(0,0,0)
+            # glVertex(0,0,10)
+            # glEnd()
+
+            print(vertices)
+            print(vertices.dtype)
+            print(colors)
+            print(colors.dtype)
 
             # Generate buffers and bind them
             VBOs = glGenBuffers(2)
 
-            # Vertex buffer
+            # Vertices
             glBindBuffer(GL_ARRAY_BUFFER, VBOs[0])
             glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
-            glEnableClientState(GL_VERTEX_ARRAY)
             glVertexPointer(3, GL_FLOAT, 0, None)
 
-            # Color buffer
+            # Colors
             glBindBuffer(GL_ARRAY_BUFFER, VBOs[1])
             glBufferData(GL_ARRAY_BUFFER, colors.nbytes, colors, GL_STATIC_DRAW)
-            glEnableClientState(GL_COLOR_ARRAY)
             glColorPointer(4, GL_FLOAT, 0, None)
 
-            # Draw the line segments
+            # Draw
             glDrawArrays(GL_LINES, 0, len(vertices) // 3)
+
+
+
+        glDisableClientState(GL_VERTEX_ARRAY)
+        glDisableClientState(GL_COLOR_ARRAY)

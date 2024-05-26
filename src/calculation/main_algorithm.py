@@ -1,3 +1,5 @@
+import logging
+
 import numpy as np
 
 from calculation.rays import RayBundle
@@ -6,9 +8,12 @@ from components.simulation_data import SimulationData
 from components.source_rays import SourceRays
 from spectral_sampling.spectral_distribution import SpectralDistribution
 
+logger = logging.getLogger("main_algorithm")
 
 def main_algorithm(input_data: SimulationData, parameters: SimulationParameters) -> list[RayBundle]:
     """ Main algorithm """
+
+    # print("Running main calculation")
 
     # If there's no sources there's nothing to do, ongoing we assume >0 sources
     if len(input_data.sources) == 0:
