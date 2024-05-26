@@ -1,2 +1,3 @@
-# optical_simulation
-Ray tracing optics simulator
+# Rayhem
+
+Needs docs
