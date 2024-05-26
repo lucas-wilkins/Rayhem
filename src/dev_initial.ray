@@ -4,8 +4,9 @@
     "data": {
       "simulation_parameters": {
         "minimum_distance": 1e-09,
-        "maximum_rays": 10000000,
-        "minimum_intensity": 1e-09
+        "maximum_rays": 1000000,
+        "minimum_intensity": 1e-09,
+        "maximum_iterations": 1000
       },
       "rendering_parameters": {
         "show_escaped": false,
@@ -95,26 +96,6 @@
             "x": 0.0,
             "y": 0.0,
             "z": 0.0
-          }
-        },
-        "children": []
-      },
-      {
-        "class": "point_source",
-        "data": {
-          "spectral_distribution": {
-            "index": 2
-          },
-          "density": 2
-        },
-        "children": []
-      },
-      {
-        "class": "single_ray",
-        "data": {
-          "spectral_distribution": {
-            "index": 0,
-            "wavelength": 500.0
           }
         },
         "children": []

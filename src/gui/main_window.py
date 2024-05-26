@@ -7,13 +7,16 @@ import logging
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
 from PySide6.QtGui import Qt, QKeySequence, QStyleHints
 
+from calculation.main_algorithm import main_algorithm
 from gui import appearance
+from gui.colour_schemes import dark
 from gui.element_library import ElementLibrary
 from gui.element_tree import ElementTree
 from gui.material_library import MaterialLibrary
 from gui.properties import Properties
 from gui.path_editor.path_editor import PathEditor
 from gui.rendering.GL.scene import Scene
+from gui.rendering.ray_rendering import RayRenderer
 from gui.rendering.tree_rendering import TreeRenderer
 from gui.spectral_sampling import SpectralSamplingWindow
 from media.icons import icons
@@ -75,7 +78,12 @@ class MainWindow(QMainWindow):
         file_save_as = menu_file.addAction("Save As")
         file_save_as.triggered.connect(self.onSaveAs)
 
-        window_menu = menu.addMenu("&View")
+        render_menu = menu.addMenu("&Rendering")
+        render_menu_colours = render_menu.addMenu("&Colour Scheme")
+        render_menu_dark = render_menu_colours.addAction("&Dark")
+        render_menu_light = render_menu_colours.addAction("&Light")
+
+        window_menu = menu.addMenu("&Windows")
 
         self.window_menu_element_tree = window_menu.addAction("Scene Tree")
         self.window_menu_element_tree.setCheckable(True)
@@ -109,6 +117,11 @@ class MainWindow(QMainWindow):
 
         # Set up rendering links
         self.glWidget.add(TreeRenderer(self.element_tree))
+        self.ray_renderer = RayRenderer(
+            self.element_tree.sceneTreeRoot.rendering_parameters,
+            colour_scheme=dark) # TODO: Link this with the menu
+
+        self.glWidget.add(self.ray_renderer)
 
         # Make full screen
         self.showMaximized()
@@ -140,6 +153,13 @@ class MainWindow(QMainWindow):
         else:
             self.load(filename)
 
+    def runSimulation(self):
+
+        simulation_data = self.element_tree.simulation_data()
+        simulation_parameters = self.element_tree.sceneTreeRoot.simulation_parameters
+        rays = main_algorithm(simulation_data, simulation_parameters)
+
+        self.ray_renderer.rays = rays
 
     def updateTitle(self):
         display_name = "" if self._loaded_file is None else f" [{self._loaded_file}]"
@@ -151,6 +171,11 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(title_string)
 
     def updateEverything(self):
+        self.ray_renderer.rendering_parameters = self.element_tree.sceneTreeRoot.rendering_parameters
+
+        # TODO: Make this dependent on an "automatic render" flag
+        self.runSimulation()
+
         self.glWidget.update()
         # self.elementsTree
         self.updateTitle()

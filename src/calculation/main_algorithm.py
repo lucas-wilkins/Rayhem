@@ -7,8 +7,12 @@ from components.source_rays import SourceRays
 from spectral_sampling.spectral_distribution import SpectralDistribution
 
 
-def run_algorithm(input_data: SimulationData, parameters: SimulationParameters):
+def main_algorithm(input_data: SimulationData, parameters: SimulationParameters) -> list[RayBundle]:
     """ Main algorithm """
+
+    # If there's no sources there's nothing to do, ongoing we assume >0 sources
+    if len(input_data.sources) == 0:
+        return []
 
     # Create rays from sources
 
@@ -47,14 +51,14 @@ def run_algorithm(input_data: SimulationData, parameters: SimulationParameters):
 
     # TODO: actual propagation
 
-    escapes = np.ones(source_ids.shape, dtype=bool)
+    escaped = np.ones(source_ids.shape, dtype=bool)
 
     bundles = [RayBundle(
         origins=origins,
         directions=directions,
         intensities=intensities,
         wavelengths=wavelengths,
-        source_ids=source_ids)]
-
+        source_ids=source_ids,
+        escaped=escaped)]
 
     return bundles

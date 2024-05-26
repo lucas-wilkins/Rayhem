@@ -184,9 +184,8 @@ class Transformation(ElementTreeItem):
 
                 # Forward, apply inverse translation to child first, then inverse rotation
                 inv_rotation = np.dot(child_component.backward_rotation, self.inv_rotation)
-                inv_translation = np.dot(child_component.backward_rotation, child_component.backward_translation - self.translation)
 
-                output.append(ComponentAndTransform(child_component.component, rotation, inv_rotation, translation, inv_translation))
+                output.append(ComponentAndTransform(child_component.component, rotation, inv_rotation, translation))
 
         return output
 
@@ -197,11 +196,8 @@ class Transformation(ElementTreeItem):
                 rotation = np.dot(self.rotation, child_source.forward_rotation)
                 translation = self.translation + np.dot(self.rotation, child_source.forward_translation)
                 inv_rotation = np.dot(child_source.backward_rotation, self.inv_rotation)
-                inv_translation = np.dot(child_source.backward_rotation,
-                                         child_source.backward_translation - self.translation)
 
-                output.append(SourceAndTransform(child_source.source, rotation, inv_rotation, translation,
-                                                    inv_translation))
+                output.append(SourceAndTransform(child_source.source, rotation, inv_rotation, translation))
 
         return output
 
