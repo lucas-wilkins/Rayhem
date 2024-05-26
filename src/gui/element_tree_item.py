@@ -19,7 +19,7 @@ class ElementTreeItem(Serialisable, QTreeWidgetItem, HasMainWindowRepresentation
         if self._parentTree is None:
 
             # What's the right exception for this?
-            raise AttributeError(f"Element {self.name} does not have a parentTree set")
+            raise AttributeError(f"Element {self.debug_name} does not have a parentTree set")
 
         return self._parentTree
 

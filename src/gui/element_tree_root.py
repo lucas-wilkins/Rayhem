@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QGridLayout, QLabel, QCheckBox
+from PySide6.QtWidgets import QWidget, QGridLayout, QLabel, QCheckBox, QSpinBox
 
 from calculation.simulation_parameters import SimulationParameters
 from components.element import ElementTreeItem
@@ -48,12 +48,18 @@ class ElementTreeRoot(ElementTreeItem):
         layout.addWidget(QLabel("Minimum Intensity"), 1, 0)
         layout.addWidget(QLabel("Minimum Travel"), 2, 0)
         layout.addWidget(QLabel("Maximum Rays"), 3, 0)
-        layout.addWidget(QLabel("Show Escaped Rays"), 4, 0)
-        layout.addWidget(QLabel("Escaped Ray Length"), 5, 0)
+        layout.addWidget(QLabel("Maximum Iterations"), 4, 0)
+        layout.addWidget(QLabel("Show Escaped Rays"), 5, 0)
+        layout.addWidget(QLabel("Escaped Ray Length"), 6, 0)
 
         min_distance = MagnitudeSpinBox(self.simulation_parameters.minimum_distance, -6, -3)
         min_intensity = MagnitudeSpinBox(self.simulation_parameters.maximum_rays, 3, 12)
         max_rays = MagnitudeSpinBox(self.simulation_parameters.minimum_intensity, -15, 0)
+        max_iters = QSpinBox()
+
+        max_iters.setMinimum(1)
+        max_iters.setMaximum(100000)
+        max_iters.setValue(self.simulation_parameters.maximum_iterations)
 
         show_escaped = QCheckBox()
         show_escaped.setChecked(self.rendering_parameters.show_escaped)
@@ -65,8 +71,11 @@ class ElementTreeRoot(ElementTreeItem):
         layout.addWidget(min_intensity, 1, 1)
         layout.addWidget(min_distance, 2, 1)
         layout.addWidget(max_rays, 3, 1)
-        layout.addWidget(show_escaped, 4, 1)
-        layout.addWidget(escaped_length, 5, 1)
+        layout.addWidget(max_iters, 4, 1)
+        layout.addWidget(show_escaped, 5, 1)
+        layout.addWidget(escaped_length, 6, 1)
+
+        #TODO Add callbacks
 
         widget.setLayout(layout)
 

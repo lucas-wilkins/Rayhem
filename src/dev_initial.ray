@@ -98,6 +98,26 @@
           }
         },
         "children": []
+      },
+      {
+        "class": "point_source",
+        "data": {
+          "spectral_distribution": {
+            "index": 2
+          },
+          "density": 2
+        },
+        "children": []
+      },
+      {
+        "class": "single_ray",
+        "data": {
+          "spectral_distribution": {
+            "index": 0,
+            "wavelength": 500.0
+          }
+        },
+        "children": []
       }
     ]
   },

@@ -1,5 +1,6 @@
 from PySide6.QtGui import QIcon
 
+from components.source_rays import SourceRays
 from src.components.element import Element
 from src.components.simulation_data import SourceAndTransform
 
@@ -21,6 +22,6 @@ class Source(Element):
     def library_icon() -> QIcon | None:
         return icons["source"]
 
-    def create_rays(self):
-        pass
+    def create_rays(self) -> SourceRays:
+        raise NotImplementedError(f"create_rays not implemented for {self.__class__.__name__}")
 

@@ -1,5 +1,8 @@
 from dataclasses import dataclass
 
+import numpy as np
+
+
 @dataclass
 class SpectralDistribution:
     """ Represents the spectral distributions used for converting 'white' light into its components """
@@ -30,9 +33,27 @@ class SpectralDistribution:
             components=data["components"]
         )
 
+    def source_wavelengths(self, n: int):
+        """ Create list of "wavelengths" that correspond to this distribution """
+        # For all except monochromatic, this will be "white", i.e. NaN
+        wavelengths = np.empty((n, ))
+        wavelengths.fill(np.nan)
+
+        return wavelengths
+
 class Monochromatic(SpectralDistribution):
     def __init__(self, wavelength):
         super().__init__(
             f"Monochromatic ({wavelength}nm)"
             f"Monochromatic distribution at {wavelength}nm",
             [(wavelength, 1.0)])
+
+        self.wavelength = wavelength
+
+    def source_wavelengths(self, n: int):
+        """ Create list of "wavelengths" that correspond to this distribution """
+        # For all except monochromatic, this will be "white", i.e. NaN
+        wavelengths = np.empty((n, ))
+        wavelengths.fill(self.wavelength)
+
+        return wavelengths

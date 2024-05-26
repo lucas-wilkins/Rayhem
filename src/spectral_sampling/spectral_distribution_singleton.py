@@ -10,6 +10,21 @@ class SpectralDistributionSpecification:
     index: int
     wavelength: float | None = None
 
+    def serialise(self):
+        out = {"index": self.index}
+        if self.wavelength is not None:
+            out["wavelength"] = self.wavelength
+        return out
+
+    @staticmethod
+    def deserialise(data):
+        index = data["index"]
+        if "wavelength" in data:
+            return SpectralDistributionSpecification(index=index, wavelength=data["wavelength"])
+        else:
+            return SpectralDistributionSpecification(index=index)
+
+
 class SpectralDistributionSingleton(QObject):
     """ Singleton that manages the spectral distributions """
 
@@ -72,3 +87,4 @@ class SpectralDistributionSingleton(QObject):
 
 distributions = SpectralDistributionSingleton()
 
+default = SpectralDistributionSpecification(1, None)  # First non-monochromatic
