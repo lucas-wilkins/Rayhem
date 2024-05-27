@@ -1,9 +1,11 @@
 import logging
 
 import numpy as np
+import time
 
 from calculation.rays import RayBundle
 from calculation.simulation_parameters import SimulationParameters
+from calculation.summary import Summary
 from components.simulation_data import SimulationData
 from components.source_rays import SourceRays
 from spectral_sampling.spectral_distribution import SpectralDistribution
@@ -13,7 +15,7 @@ logger = logging.getLogger("main_algorithm")
 def main_algorithm(input_data: SimulationData, parameters: SimulationParameters) -> list[RayBundle]:
     """ Main algorithm """
 
-    # print("Running main calculation")
+    start_time = time.time()
 
     # If there's no sources there's nothing to do, ongoing we assume >0 sources
     if len(input_data.sources) == 0:
@@ -54,8 +56,6 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
     wavelengths = np.concatenate(wavelengths)
     source_ids = np.concatenate(source_ids)
 
-    print(origins.shape)
-
     # Check shape of everything
     n = source_ids.shape[0]
     assert origins.shape[0] == n
@@ -80,4 +80,6 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
         source_ids=source_ids,
         escaped=escaped)]
 
-    return bundles
+    summary = Summary(bundles, time.time() - start_time)
+
+    return bundles, summary

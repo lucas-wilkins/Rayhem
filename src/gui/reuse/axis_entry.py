@@ -26,6 +26,10 @@ class AxisEntry(QWidget):
         self.y = SpatialSpinBox()
         self.z = SpatialSpinBox()
 
+        self.x.setDecimals(6)
+        self.y.setDecimals(6)
+        self.z.setDecimals(6)
+
         self.x.setSingleStep(0.01)
         self.y.setSingleStep(0.01)
         self.z.setSingleStep(0.01)

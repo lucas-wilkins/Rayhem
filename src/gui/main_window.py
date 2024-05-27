@@ -4,7 +4,7 @@ import sys
 import json
 import logging
 
-from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QStatusBar
 from PySide6.QtGui import Qt, QKeySequence, QStyleHints
 
 from calculation.main_algorithm import main_algorithm
@@ -52,6 +52,13 @@ class MainWindow(QMainWindow):
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.spectral_distributions)
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.material_library)
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.path_editor)
+
+        #
+        # Status Bar
+        #
+
+        self.status_bar = QStatusBar()
+        self.setStatusBar(self.status_bar)
 
         #
         # Menus
@@ -157,8 +164,9 @@ class MainWindow(QMainWindow):
 
         simulation_data = self.element_tree.simulation_data()
         simulation_parameters = self.element_tree.sceneTreeRoot.simulation_parameters
-        rays = main_algorithm(simulation_data, simulation_parameters)
+        rays, summary = main_algorithm(simulation_data, simulation_parameters)
 
+        self.status_bar.showMessage(summary.message())
         self.ray_renderer.rays = rays
 
     def updateTitle(self):
