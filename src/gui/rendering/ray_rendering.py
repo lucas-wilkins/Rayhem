@@ -31,15 +31,15 @@ class RayRenderer(Renderable):
         glEnableClientState(GL_VERTEX_ARRAY)
         glEnableClientState(GL_COLOR_ARRAY)
 
-        for ray_bundle in self._rays:
-            print(f"rendering {len(ray_bundle.escaped)} rays")
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
+        for ray_bundle in self._rays:
 
             #
             # Render the escaped rays
             #
             wls = ray_bundle.wavelengths[ray_bundle.escaped]
-            print(f"{len(wls)} escaped")
 
 
             start = ray_bundle.origins[ray_bundle.escaped, :]
