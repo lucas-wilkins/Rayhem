@@ -89,11 +89,11 @@ class Transformation(ElementTreeItem):
 
     @property
     def angle_deg(self):
-        return self.angle * _pi_over_180
+        return self.angle * _180_over_pi
 
     @angle_deg.setter
     def angle_deg(self, value):
-        self.angle = value * _180_over_pi
+        self.angle = value * _pi_over_180
 
     @property
     def axis(self):
@@ -128,7 +128,7 @@ class Transformation(ElementTreeItem):
         self.onAnythingChanged()
 
     def _update_matrices(self):
-        r = Rotation.from_rotvec(self._angle * self._axis)
+        r = Rotation.from_rotvec(-self._angle * self._axis)
         self.rotation = r.as_matrix()
         self.inv_rotation = r.inv().as_matrix()
 
