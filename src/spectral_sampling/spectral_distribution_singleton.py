@@ -63,7 +63,7 @@ class SpectralDistributionSingleton(QObject):
         """ Is the spectrum with index `index` a custom spectrum """
         return index < len(default_spectral_sampling_methods) + 1
 
-    def get_distribution(self, specification: SpectralDistributionSpecification):
+    def get_distribution(self, specification: SpectralDistributionSpecification) -> SpectralDistribution:
         """ Get a distribution with the specification (essentially an index, but with a
         wavelength specified for index 0)"""
 

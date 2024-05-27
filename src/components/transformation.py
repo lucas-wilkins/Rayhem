@@ -30,7 +30,7 @@ class Transformation(ElementTreeItem):
 
         self._angle = 0.0 if angle is None else angle
         self._axis = np.array([0.0, 0.0, 1.0]) if axis is None else axis
-        self._translation = np.zeros((3,)) if translation is None else translation
+        self._translation = np.zeros((3, )) if translation is None else translation
 
         self.rotation = np.eye(3)
         self.inv_rotation = np.eye(3)
@@ -180,11 +180,9 @@ class Transformation(ElementTreeItem):
         output = []
         for child_node in self.children:
             for child_component in child_node.transformed_components():
-                # Forward, apply rotation to child first, then translation
-                rotation = np.dot(self.rotation, child_component.forward_rotation)
-                translation = self.translation + np.dot(self.rotation, child_component.forward_translation)
 
-                # Forward, apply inverse translation to child first, then inverse rotation
+                rotation = np.dot(child_component.forward_rotation, self.rotation)
+                translation = self.translation.reshape((1, 3)) + np.dot(child_component.translation, self.rotation)
                 inv_rotation = np.dot(child_component.backward_rotation, self.inv_rotation)
 
                 output.append(ComponentAndTransform(child_component.component, rotation, inv_rotation, translation))
@@ -195,8 +193,8 @@ class Transformation(ElementTreeItem):
         output = []
         for child_node in self.children:
             for child_source in child_node.transformed_sources():
-                rotation = np.dot(self.rotation, child_source.forward_rotation)
-                translation = self.translation + np.dot(self.rotation, child_source.forward_translation)
+                rotation = np.dot(child_source.forward_rotation, self.rotation)
+                translation = self.translation.reshape((1, 3)) + np.dot(child_source.translation, self.rotation)
                 inv_rotation = np.dot(child_source.backward_rotation, self.inv_rotation)
 
                 output.append(SourceAndTransform(child_source.source, rotation, inv_rotation, translation))

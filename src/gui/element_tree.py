@@ -94,6 +94,7 @@ class ElementTree(RayhemDockWidget):
     def addElement(self, element: ElementTreeItem):
         """ Add to the tree """
         self.closestBranchNode().addChild(element)
+        element.parentTree = self
         self.onAnythingChanged()
 
     def simulation_data(self) -> SimulationData:

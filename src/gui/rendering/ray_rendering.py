@@ -52,19 +52,6 @@ class RayRenderer(Renderable):
             raw_colors = self.colour_scheme.wavelength_to_rgba(wls).astype(np.float32)
             colors = np.concatenate((raw_colors, raw_colors), axis=1).reshape(-1)
 
-            #
-            # # X - red
-            # glBegin(GL_LINES)
-            # glColor(1,0,0)
-            # glVertex(0,0,0)
-            # glVertex(0,0,10)
-            # glEnd()
-
-            print(vertices)
-            print(vertices.dtype)
-            print(colors)
-            print(colors.dtype)
-
             # Generate buffers and bind them
             VBOs = glGenBuffers(2)
 

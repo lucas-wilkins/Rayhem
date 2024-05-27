@@ -41,18 +41,32 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
         ids = np.empty_like(rays.intensities)
         ids.fill(index)
 
-        origins.append(source_and_transform.reverse_point_transform(rays.origins))
-        directions.append(source_and_transform.reverse_direction_transform(rays.directions))
+        origins.append(source_and_transform.forward_point_transform(rays.origins))
+        directions.append(source_and_transform.forward_direction_transform(rays.directions))
         wavelengths.append(rays.wavelengths)
         intensities.append(rays.intensities)
         source_ids.append(ids)
 
     # Build into np arrays
-    origins = np.hstack(origins)
-    directions = np.hstack(directions)
+    origins = np.vstack(origins)
+    directions = np.vstack(directions)
     intensities = np.concatenate(intensities)
     wavelengths = np.concatenate(wavelengths)
     source_ids = np.concatenate(source_ids)
+
+    print(origins.shape)
+
+    # Check shape of everything
+    n = source_ids.shape[0]
+    assert origins.shape[0] == n
+    assert origins.shape[1] == 3
+    assert directions.shape[0] == n
+    assert directions.shape[1] == 3
+    assert intensities.shape[0] == n
+    assert len(intensities.shape) == 1
+    assert wavelengths.shape[0] == n
+    assert len(wavelengths.shape) == 1
+
 
     # TODO: actual propagation
 

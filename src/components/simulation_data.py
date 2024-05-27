@@ -19,7 +19,9 @@ class Transformer:
 
     def reverse_point_transform(self, points: np.ndarray):
         """ Transform points from parent frame to local frame"""
+
         translated = points - self.translation
+
         return np.dot(translated, self.backward_rotation)
 
     def forward_direction_transform(self, directions: np.ndarray):

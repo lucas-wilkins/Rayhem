@@ -1,8 +1,11 @@
+import numpy as np
 from PySide6.QtWidgets import QWidget, QGridLayout, QLabel, QSpinBox
 
+from components.source_rays import SourceRays
 from components.sources.source import Source
 from gui.reuse.spectral_distribution import SpectralDistributionCombo
 from spectral_sampling.spectral_distribution_singleton import distributions, default, SpectralDistributionSpecification
+from util.geodesic import Geodesic
 
 class PointSource(Source):
     def __init__(self, distribution: SpectralDistributionSpecification = default, density=2):
@@ -65,4 +68,17 @@ class PointSource(Source):
         layout.addWidget(n_rays, 1, 1)
 
         return widget
+
+    def create_rays(self) -> SourceRays:
+        directions, intensities = Geodesic.by_divisions(self.density)
+        origins = np.zeros_like(directions)
+        distribution = distributions.get_distribution(self.distribution)
+        wavelengths = distribution.source_wavelengths(len(intensities))
+
+        return SourceRays(
+            origins=origins,
+            directions=directions,
+            intensities=intensities,
+            wavelengths=wavelengths,
+            distribution=distribution)
 
