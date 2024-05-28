@@ -33,16 +33,16 @@ class Transformer:
         return np.dot(directions, self.backward_rotation)
 
 
-class ComponentAndTransform(Transformer):
+class InterfaceAndTransform(Transformer):
     def __init__(self,
-                 component: "Component",
+                 interface: "Interface",
                  forward_rotation: np.ndarray = np.eye(3),
                  backward_rotation: np.ndarray = np.eye(3),
                  translation: np.ndarray = np.zeros((3, ))):
 
         super().__init__(forward_rotation, backward_rotation, translation)
 
-        self.component = component
+        self.component = interface
 
 
 class SourceAndTransform(Transformer):
@@ -61,4 +61,4 @@ class SourceAndTransform(Transformer):
 @dataclass
 class SimulationData:
     sources: list[SourceAndTransform]
-    components: list[ComponentAndTransform]
+    components: list[InterfaceAndTransform]

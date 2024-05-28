@@ -1,8 +1,8 @@
 from PySide6.QtGui import QIcon
 
-from components.source_rays import SourceRays
-from src.components.element import Element
-from src.components.simulation_data import SourceAndTransform
+from elements.source_rays import SourceRays
+from elements.element import Element
+from elements.simulation_data import SourceAndTransform
 
 from media.icons import icons
 
@@ -15,7 +15,7 @@ class Source(Element):
     def transformed_sources(self) -> list["SourceAndTransform"]:
         return [SourceAndTransform(source=self)]
 
-    def transformed_components(self) -> list["ComponentAndTransform"]:
+    def transformed_interfaces(self) -> list["ComponentAndTransform"]:
         return []
 
     @staticmethod

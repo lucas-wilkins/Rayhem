@@ -1,14 +1,14 @@
-from src.components.component import Component
-from src.components.element import Element
-from src.components.simulation_data import ComponentAndTransform
+from elements.interface import Interface
+from elements.element import Element
+from elements.simulation_data import InterfaceAndTransform
 
 
-class DummyComponent(Component):
+class DummyInterface(Interface):
     pass
 
 class DummyElement(Element):
-    def transformed_components(self) -> list["ComponentAndTransform"]:
-        return [ComponentAndTransform(component=DummyComponent())]
+    def transformed_interfaces(self) -> list["InterfaceAndTransform"]:
+        return [InterfaceAndTransform(interface=DummyInterface())]
 
     def transformed_sources(self) -> list["SourceAndTransform"]:
         return []

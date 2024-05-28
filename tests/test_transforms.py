@@ -36,7 +36,7 @@ def test_compound_two_translations(a, b):
     tb.addChild(source)
     tb.addChild(element)
 
-    comps = ta.transformed_components()
+    comps = ta.transformed_interfaces()
     srcs = ta.transformed_sources()
 
     assert len(comps) == 1
@@ -66,7 +66,7 @@ def test_z_rot90_z(axis, expected):
     tb.addChild(source)
     tb.addChild(element)
 
-    comps = ta.transformed_components()
+    comps = ta.transformed_interfaces()
     srcs = ta.transformed_sources()
 
     assert len(comps) == 1

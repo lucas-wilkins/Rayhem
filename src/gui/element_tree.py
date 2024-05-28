@@ -3,12 +3,12 @@ from PySide6.QtWidgets import QDockWidget, QTreeWidget, QAbstractItemView, QWidg
 from PySide6.QtGui import Qt
 from PySide6 import QtCore
 
-from components.simulation_data import SimulationData
-from components.sources.point import PointSource
-from components.sources.single_ray import SingleRay
+from elements.simulation_data import SimulationData
+from elements.sources.point import PointSource
+from elements.sources.single_ray import SingleRay
 from gui.element_tree_root import ElementTreeRoot
-from components.transformation import Transformation
-from components.element import ElementTreeItem
+from elements.transformation import Transformation
+from elements.element import ElementTreeItem
 from gui.rayhem_dock_window import RayhemDockWidget
 from loadsave import DeserialisationError
 
@@ -101,7 +101,7 @@ class ElementTree(RayhemDockWidget):
         """ Gather all components together as a simulation data object """
 
         sources = self.sceneTreeRoot.transformed_sources()
-        components = self.sceneTreeRoot.transformed_components()
+        components = self.sceneTreeRoot.transformed_interfaces()
 
         return SimulationData(sources=sources, components=components)
 

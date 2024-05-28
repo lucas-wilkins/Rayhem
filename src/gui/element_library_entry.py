@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QTreeWidgetItem
 
-from components.element import Element
+from elements.element import Element
 
 
 class ElementLibraryEntry(QTreeWidgetItem):

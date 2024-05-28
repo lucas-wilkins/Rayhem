@@ -6,13 +6,15 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QCheckB
 from OpenGL.GL import glTranslate, glRotate, glPushMatrix, glPopMatrix, glBegin, glEnd, glVertex, glColor
 from OpenGL import GL
 
-from components.simulation_data import ComponentAndTransform, SourceAndTransform
+from elements.simulation_data import InterfaceAndTransform, SourceAndTransform
+from elements.ids import unique_id
+
 from gui.reuse.axis_entry import AxisEntry
 from gui.element_tree_item import ElementTreeItem
 from gui.reuse.spinboxes import AngleSpinBox
 from gui.reuse.translation_entry import TranslationEntry
+
 from loadsave import DeserialisationError
-from components.ids import unique_id
 
 from media.icons import icons
 
@@ -176,16 +178,16 @@ class Transformation(ElementTreeItem):
     def __repr__(self):
         return f"Transformation[{self.debug_id}]"
 
-    def transformed_components(self) -> list[ComponentAndTransform]:
+    def transformed_interfaces(self) -> list[InterfaceAndTransform]:
         output = []
         for child_node in self.children:
-            for child_component in child_node.transformed_components():
+            for child_interface in child_node.transformed_interfaces():
 
-                rotation = np.dot(child_component.forward_rotation, self.rotation)
-                translation = self.translation.reshape((1, 3)) + np.dot(child_component.translation, self.rotation)
-                inv_rotation = np.dot(child_component.backward_rotation, self.inv_rotation)
+                rotation = np.dot(child_interface.forward_rotation, self.rotation)
+                translation = self.translation.reshape((1, 3)) + np.dot(child_interface.translation, self.rotation)
+                inv_rotation = np.dot(child_interface.backward_rotation, self.inv_rotation)
 
-                output.append(ComponentAndTransform(child_component.component, rotation, inv_rotation, translation))
+                output.append(InterfaceAndTransform(child_interface.component, rotation, inv_rotation, translation))
 
         return output
 

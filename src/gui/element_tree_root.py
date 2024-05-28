@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QWidget, QGridLayout, QLabel, QCheckBox, QSpinBox
 
 from calculation.simulation_parameters import SimulationParameters
-from components.element import ElementTreeItem
+from elements.element import ElementTreeItem
 from gui.path_editor.path_options import PathOptionsWidget
 from gui.rendering.rendering_parameters import RenderingParameters
 from gui.reuse.spinboxes import MagnitudeSpinBox, DistanceSpinBox
@@ -34,8 +34,8 @@ class ElementTreeRoot(ElementTreeItem):
         rendering_parameters = RenderingParameters.deserialise(data["rendering_parameters"])
         return ElementTreeRoot(simulation_parameters, rendering_parameters)
 
-    def transformed_components(self) -> list["ComponentAndTransform"]:
-        return [comp for child in self.children for comp in child.transformed_components()]
+    def transformed_interfaces(self) -> list["ComponentAndTransform"]:
+        return [comp for child in self.children for comp in child.transformed_interfaces()]
 
     def transformed_sources(self) -> list["SourceAndTransform"]:
         return [comp for child in self.children for comp in child.transformed_sources()]

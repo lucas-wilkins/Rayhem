@@ -10,3 +10,5 @@ class Material(Serialisable):
     def split_white_rays(ray_data, spectral_sampling_lookup: Sequence[SpectralDistribution]):
         pass
 
+    def setGLAppearance(self):
+        pass

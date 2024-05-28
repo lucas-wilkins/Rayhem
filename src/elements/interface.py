@@ -1,5 +1,5 @@
-from components.material import Material
-from components.surface import Surface
+from elements.material import Material
+from elements.surface import Surface
 
 from loadsave import Serialisable
 

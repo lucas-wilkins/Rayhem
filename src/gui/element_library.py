@@ -76,8 +76,8 @@ class ElementLibrary(RayhemDockWidget):
         self._update_button_states()
 
     def fill_library(self):
-        from src.components.sources.point import PointSource
-        from src.components.sources.single_ray import SingleRay
+        from elements.sources.point import PointSource
+        from elements.sources.single_ray import SingleRay
 
         self.sources.addChild(ElementLibraryEntry(PointSource))
         self.sources.addChild(ElementLibraryEntry(SingleRay))

@@ -1,8 +1,8 @@
 import numpy as np
 from PySide6.QtWidgets import QWidget, QGridLayout, QLabel, QSpinBox
 
-from components.source_rays import SourceRays
-from components.sources.source import Source
+from elements.source_rays import SourceRays
+from elements.sources.source import Source
 from gui.reuse.spectral_distribution import SpectralDistributionCombo
 from spectral_sampling.spectral_distribution_singleton import distributions, default, SpectralDistributionSpecification
 from util.geodesic import Geodesic

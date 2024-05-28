@@ -1,7 +1,7 @@
 import sys
 from PySide6.QtWidgets import QApplication
 
-from components.transformation import Transformation
+from elements.transformation import Transformation
 from gui.main_window import MainWindow
 
 
