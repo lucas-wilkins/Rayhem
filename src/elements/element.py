@@ -34,9 +34,5 @@ class Element(ElementTreeItem):
         """ Docs to show when help is requested """
 
 
-    @staticmethod
-    def material_surface_selection() -> QWidget:
-        pass
-
     def __repr__(self):
         return self.__class__.__name__

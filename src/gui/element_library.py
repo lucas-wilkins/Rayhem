@@ -76,11 +76,20 @@ class ElementLibrary(RayhemDockWidget):
         self._update_button_states()
 
     def fill_library(self):
+        """ Fill the library widget with possibilities """
+        # Sources
+
         from elements.sources.point import PointSource
         from elements.sources.single_ray import SingleRay
 
         self.sources.addChild(ElementLibraryEntry(PointSource))
         self.sources.addChild(ElementLibraryEntry(SingleRay))
+
+        # Other
+        from elements.generic_interface import GenericInterface
+
+        self.other.addChild(ElementLibraryEntry(GenericInterface))
+
 
 
     def onAnythingChanged(self):

@@ -187,7 +187,7 @@ class Transformation(ElementTreeItem):
                 translation = self.translation.reshape((1, 3)) + np.dot(child_interface.translation, self.rotation)
                 inv_rotation = np.dot(child_interface.backward_rotation, self.inv_rotation)
 
-                output.append(InterfaceAndTransform(child_interface.component, rotation, inv_rotation, translation))
+                output.append(InterfaceAndTransform(child_interface.interface, rotation, inv_rotation, translation))
 
         return output
 

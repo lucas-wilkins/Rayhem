@@ -14,6 +14,7 @@ icons["transform"] = QIcon(str(resources.path("media.icon_files.light", "transfo
 icons["lens"] = QIcon(str(resources.path("media.icon_files.light", "lens.svg")))
 icons["mirror"] = QIcon(str(resources.path("media.icon_files.light", "mirror.svg")))
 icons["source"] = QIcon(str(resources.path("media.icon_files.light", "source.svg")))
+icons["interface"] = QIcon(str(resources.path("media.icon_files.light", "interface.svg")))
 
 def setup_dark_mode_icons(app: QApplication):
 
@@ -24,3 +25,4 @@ def setup_dark_mode_icons(app: QApplication):
         icons["lens"] = QIcon(str(resources.path("media.icon_files.dark", "lens.svg")))
         icons["mirror"] = QIcon(str(resources.path("media.icon_files.dark", "mirror.svg")))
         icons["source"] = QIcon(str(resources.path("media.icon_files.dark", "source.svg")))
+        icons["interface"] = QIcon(str(resources.path("media.icon_files.dark", "interface.svg")))

@@ -36,7 +36,7 @@ class ElementTreeItem(Serialisable, QTreeWidgetItem, HasMainWindowRepresentation
         """ Children of this object """
         return [self.child(i) for i in range(self.childCount())]
 
-    def transformed_interfaces(self) -> list["ComponentAndTransform"]:
+    def transformed_interfaces(self) -> list["InterfaceAndTransform"]:
         raise NotImplementedError(f"transformed_components is not implemented for {self.__class__}")
 
     def transformed_sources(self) -> list["SourceAndTransform"]:

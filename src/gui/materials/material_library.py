@@ -12,4 +12,3 @@ class MaterialLibrary(RayhemDockWidget):
         layout.addWidget(QLabel("Material Library"))
 
         self.setLayout(layout)
-

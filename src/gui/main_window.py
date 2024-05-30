@@ -1,18 +1,17 @@
 import os
-import sys
 
 import json
 import logging
 
-from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QStatusBar
-from PySide6.QtGui import Qt, QKeySequence, QStyleHints
+from PySide6.QtWidgets import QMainWindow, QFileDialog, QMessageBox, QStatusBar
+from PySide6.QtGui import Qt, QKeySequence
 
 from calculation.main_algorithm import main_algorithm
 from gui import appearance
 from gui.colour_schemes import dark
 from gui.element_library import ElementLibrary
 from gui.element_tree import ElementTree
-from gui.material_library import MaterialLibrary
+from gui.materials.material_library import MaterialLibrary
 from gui.properties import Properties
 from gui.path_editor.path_editor import PathEditor
 from gui.rendering.GL.scene import Scene

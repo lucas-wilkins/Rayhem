@@ -103,7 +103,7 @@ class ElementTree(RayhemDockWidget):
         sources = self.sceneTreeRoot.transformed_sources()
         components = self.sceneTreeRoot.transformed_interfaces()
 
-        return SimulationData(sources=sources, components=components)
+        return SimulationData(sources=sources, interfaces=components)
 
     def deserialise(self, data: dict):
         """ Deserialise tree data and set """

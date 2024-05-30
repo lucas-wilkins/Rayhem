@@ -4,8 +4,19 @@ from elements.surface import Surface
 
 class FlatSquare(Surface):
     """ Just a square in the local xy frame, centred at the origin"""
-    def __init__(self, size: float):
+    def __init__(self, size: float = 1.0):
         self.size = size
+
+    @staticmethod
+    def serialisation_name() -> str:
+        return "Flat Square"
+
+    def serialise(self) -> dict:
+        return {"size": self.size}
+
+    @staticmethod
+    def deserialise(data: dict):
+        return FlatSquare(float(data["size"]))
 
     def get_collision_points(self, local_origins: np.ndarray, local_directions: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         """ Get where the rays collide with this surface
@@ -85,7 +96,7 @@ class FlatSquare(Surface):
             [-1, -1, 0],
             [-1,  1, 0],
             [ 1,  1, 0],
-            [ 1, -1, 0]])
+            [ 1, -1, 0]], dtype=np.float32)
 
         triangles = np.array([[0, 1, 2], [0, 2, 3]], dtype=int)
 

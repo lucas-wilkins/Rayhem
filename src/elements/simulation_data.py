@@ -42,7 +42,7 @@ class InterfaceAndTransform(Transformer):
 
         super().__init__(forward_rotation, backward_rotation, translation)
 
-        self.component = interface
+        self.interface = interface
 
 
 class SourceAndTransform(Transformer):
@@ -61,4 +61,4 @@ class SourceAndTransform(Transformer):
 @dataclass
 class SimulationData:
     sources: list[SourceAndTransform]
-    components: list[InterfaceAndTransform]
+    interfaces: list[InterfaceAndTransform]
