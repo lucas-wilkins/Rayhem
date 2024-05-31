@@ -55,17 +55,27 @@ window.save("point_source_mirror.ray")
 
 window.new()
 
-mirror = GenericInterface()
+mirror1 = GenericInterface()
+mirror2 = GenericInterface()
 
 
-transform = Transformation()
-transform.parentTree = window.element_tree
-transform.translation = np.array([0, 0, 3], dtype=float)
-transform.axis = np.array([0,1,0], dtype=float)
-transform.angle_deg = 45
-transform.addChild(mirror)
+transform1 = Transformation()
+transform1.parentTree = window.element_tree
+transform1.translation = np.array([0, 0, 3], dtype=float)
+transform1.axis = np.array([0,1,0], dtype=float)
+transform1.angle_deg = 45
+transform1.addChild(mirror1)
 
-window.element_tree.sceneTreeRoot.addChild(transform)
+
+transform2 = Transformation()
+transform2.parentTree = window.element_tree
+transform2.translation = np.array([3, 0, 3], dtype=float)
+transform2.axis = np.array([0,1,0], dtype=float)
+transform2.angle_deg = 45
+transform2.addChild(mirror2)
+
+window.element_tree.sceneTreeRoot.addChild(transform1)
+window.element_tree.sceneTreeRoot.addChild(transform2)
 window.element_tree.sceneTreeRoot.addChild(SingleRay())
 
 window.save("mirror_system.ray")

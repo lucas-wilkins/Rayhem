@@ -74,3 +74,4 @@ class IntermediateData:
     wavelengths: np.ndarray
     intensities: np.ndarray
     source_ids: np.ndarray
+    states: np.ndarray

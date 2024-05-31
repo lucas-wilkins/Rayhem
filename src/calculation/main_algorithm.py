@@ -85,12 +85,24 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
     # * Care must be taken to deal with the escaped state properly *
     #
 
-    bundles: list[RayBundle] = []
 
     # For now, check everything, assume no change in state
+    # Number of states is just the number of sources
     check_matrix = np.ones((len(input_data.sources), len(input_data.interfaces)), dtype=bool)
+    state_map = (np.arange(0, len(input_data.sources), 1, dtype=int).reshape(-1, 1) *
+                 np.ones((1, len(input_data.interfaces)), dtype=int))
 
+    # NOTE on state_map:
+    #   first index is current state,
+    #   second index is the element interacted with,
+    #   value is the next state to go to
+
+    #
     # main loop
+    #
+
+    bundles: list[RayBundle] = []
+
     for iteration in range(parameters.maximum_iterations):
 
         n_rays_in = len(intensities)
@@ -113,7 +125,7 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
             interface = interface_and_transform.interface
             to_check = check_matrix[states, interface_index]
 
-            print("Interface", interface_index, "checking", sum(to_check))
+            # print("Interface", interface_index, "checking", sum(to_check))
 
             # Transform rays into the coordinate system of the interface
 
@@ -183,6 +195,7 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
             local_wavelengths = wavelengths[relevant_rays]
             local_intensities = intensities[relevant_rays]
             local_sources = source_ids[relevant_rays]
+            new_states = state_map[states[relevant_rays], interface_index] # Set new state here, before everything gets messed up
 
             local_data_for_each_interface.append(
                 IntermediateData(
@@ -191,7 +204,8 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
                     local_normals=local_normals,
                     wavelengths=local_wavelengths,
                     intensities=local_intensities,
-                    source_ids=local_sources))
+                    source_ids=local_sources,
+                    states=new_states))
 
         bundles.append(
             RayBundle(origins=origins,
@@ -248,6 +262,7 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
                     data.local_position = data.local_position[index_array, :]
                     data.local_directions = data.local_directions[index_array, :]
                     data.local_normals = data.local_normals[index_array, :]
+                    data.states = data.states[index_array]
 
                     # Wavelengths need to be done in a very similar way, flattened matrix of wavelengths
                     # note: the dimension that varies is opposite on this one
@@ -272,6 +287,7 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
         wavelengths = []
         intensities = []
         source_ids = []
+        states = []
 
         for interface_and_transform, data in zip(input_data.interfaces, local_data_for_each_interface):
             # IMPORTANT NOTE: Modifying in place is allowed here, must not change this algorithm
@@ -284,6 +300,7 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
             wavelengths.append(propagation_data.wavelengths)
             intensities.append(propagation_data.intensities)
             source_ids.append(propagation_data.source_ids)
+            states.append(propagation_data.states)
 
         # states = np.concatenate(states) # TODO: Part of the pathing implementation
 
@@ -297,6 +314,7 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
         intensities = np.concatenate(intensities)
         wavelengths = np.concatenate(wavelengths)
         source_ids = np.concatenate(source_ids)
+        states = np.concatenate(states)
 
         # Remove any with too small an intensity
         not_too_dim = intensities > parameters.minimum_intensity
