@@ -5,6 +5,7 @@ from elements.element import Element
 from elements.simulation_data import SourceAndTransform
 
 from media.icons import icons
+from spectral_sampling.spectral_distribution import SpectralDistribution
 
 
 class Source(Element):
@@ -24,4 +25,3 @@ class Source(Element):
 
     def create_rays(self) -> SourceRays:
         raise NotImplementedError(f"create_rays not implemented for {self.__class__.__name__}")
-

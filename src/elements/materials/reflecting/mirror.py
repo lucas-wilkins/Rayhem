@@ -16,3 +16,7 @@ class Mirror(Material):
     def deserialise(data: dict):
         return Mirror()
 
+    def is_dispersive(self):
+        return False
+
+

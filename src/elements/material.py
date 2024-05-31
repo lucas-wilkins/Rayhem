@@ -12,6 +12,10 @@ class Material(Serialisable):
     def display_name() -> str:
         """ Name to be shown in gui """
 
+    def is_dispersive(self) -> bool:
+        """ Is this material dispersive? """
+        return True
+
     def split_white_rays(self, ray_data, spectral_sampling_lookup: Sequence[SpectralDistribution]):
         """ Method to split white rays into spectral components """
 

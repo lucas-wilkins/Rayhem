@@ -3,20 +3,22 @@ from dataclasses import dataclass
 import numpy as np
 
 
-@dataclass
+
 class SpectralDistribution:
     """ Represents the spectral distributions used for converting 'white' light into its components """
-    name: str
-    description: str
-    components: list[list[float, float]]
 
-    @property
-    def wavelengths(self):
-        return [wl for wl, _ in self.components]
+    def __init__(self,
+                 name: str,
+                 description: str,
+                 components: list[list[float, float]]):
 
-    @property
-    def intensities(self):
-        return [i for _, i in self.components]
+        self.name = name
+        self.description = description
+        self.components = components
+
+        self.wavelengths = np.array([wl for wl, _ in self.components], dtype=float)
+        self.intensities = np.array([i for _, i in self.components], dtype=float)
+
 
     def serialise(self):
         return {

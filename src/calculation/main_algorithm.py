@@ -85,6 +85,7 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
     # * Care must be taken to deal with the escaped state properly *
     #
 
+    bundles: list[RayBundle] = []
 
     # For now, check everything, assume no change in state
     check_matrix = np.ones((len(input_data.sources), len(input_data.interfaces)), dtype=bool)
@@ -147,17 +148,24 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
             collision_coordinates[to_check_and_replace, :] = coordinates[local_replace_flag, :]
             collision_directions[to_check_and_replace, :] = local_directions[local_replace_flag, :]
 
-        # Expand any white rays into spectral components if needed
-        for interface_index, interface_and_transform in enumerate(input_data.iterfaces):
-            pass
 
+
+        # List of escaped rays
+        escaped = collision_indices == -1
+
+        # List of collision points
+        directions_or_ends = directions.copy()
+
+        local_data_for_each_interface = []
+
+        #
         # Now we should have data on which rays collided and with what, so we can now work out what to do with them
+        #
 
         for interface_index, interface_and_transform in enumerate(input_data.interfaces):
             relevant_rays = collision_indices == interface_index
 
             surface: Surface = interface_and_transform.interface.surface
-            material: Material = interface_and_transform.interface.material
 
             # print(sum(relevant_rays.astype(int)), "rays hit interface", interface_index)
 
@@ -168,20 +176,109 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
             local_position = surface.internal_to_local_position(internal_coordinates)
             local_normals = surface.internal_to_local_normal(internal_coordinates)
 
+            # Ray ends to go in to bundle
+            directions_or_ends[relevant_rays, :] = interface_and_transform.forward_point_transform(local_position)
 
+            # Grab other information for this component
+            local_wavelengths = wavelengths[relevant_rays]
+            local_intensities = intensities[relevant_rays]
+            local_sources = source_ids[relevant_rays]
 
+            local_data_for_each_interface.append(
+                (local_position, local_directions, local_normals, local_wavelengths, local_intensities, local_sources))
 
+        bundles.append(
+            RayBundle(origins=origins,
+                      directions_or_ends=directions_or_ends,
+                      intensities=intensities,
+                      wavelengths=wavelengths,
+                      source_ids=source_ids,
+                      escaped=escaped))
 
+        #
+        # We can now check whether there is anything left to propagate
+        #
 
-    escaped = np.ones(source_ids.shape, dtype=bool)
+        if np.all(escaped):
+            break
 
-    bundles = [RayBundle(
-        origins=origins,
-        directions_or_ends=directions,
-        intensities=intensities,
-        wavelengths=wavelengths,
-        source_ids=source_ids,
-        escaped=escaped)]
+        #
+        # Expand any white rays into spectral components if needed
+        #
+
+        new_local_data_for_each_interface = []
+        for interface_index, (interface_and_transform, data) in enumerate(zip(input_data.iterfaces, local_data_for_each_interface)):
+
+            if interface_and_transform.interface.is_dispersive():
+
+                local_position, local_directions, local_normals, local_wavelengths, local_intensities, local_sources = data
+
+                #
+                # Plan is:
+                #   1: create an array indexing the rays
+                #   2: remove white ray indices and duplicate them at the end
+                #   3: apply index mapping to everything
+                #   4: correct everything that is not a straight copy (wavelength & intensity)
+                #
+
+                for source_id, distribution in enumerate(distributions):
+
+                    n_duplications = len(distribution.wavlengths)
+
+                    white_rays = np.isnan(local_wavelengths)
+                    use_source = (local_sources == source_id) & white_rays
+
+                    index_array = np.arange(len(local_sources))
+
+                    update_indices = index_array[use_source]
+                    keep_indices = index_array[~use_source]
+
+                    n_keep = len(keep_indices)
+                    n_update = len(update_indices)
+
+                    # index mapping
+                    _updated_indices = (update_indices.reshape(-1, 1) * np.ones((1, n_duplications), dtype=int)).reshape(-1) # Can be faster?
+                    index_array = np.concatenate((keep_indices, _updated_indices))
+
+                    local_sources = local_sources[index_array]
+
+                    local_position = local_position[index_array, :]
+                    local_directions = local_directions[index_array, :]
+                    local_normals = local_normals[index_array, :]
+
+                    # Wavelengths need to be done in a very similar way, flattened matrix of wavelengths
+                    # note: the dimension that varies is opposite on this one
+                    keep_wavelengths = local_wavelengths[keep_indices]
+                    updated_wavelengths = (np.ones((n_update, 1)) * distribution.wavelengths.reshape(1, -1)).reshape(-1)
+                    local_wavelengths = np.concatenate((keep_wavelengths, updated_wavelengths))
+
+                    keep_intensities = local_intensities[keep_indices]
+                    updated_intensities = (local_intensities[update_indices].reshape(-1, 1) *
+                                           distribution.intensities.reshape(1, -1)).reshape(-1)
+                    local_intensities = np.concatenate((keep_intensities, updated_intensities))
+
+                new_local_data_for_each_interface.append(
+                    (local_position, local_directions, local_normals, local_wavelengths, local_intensities, local_sources))
+            else:
+                new_local_data_for_each_interface.append(data)
+
+        local_data_for_each_interface = new_local_data_for_each_interface
+
+        #
+        # Work out what happens to each ray after it collides.
+        #
+        # It might branch into multiple rays, but this will be handled by the material
+        #
+
+        new_local_data_for_each_interface = []
+        for interface_index, (interface_and_transform, data) in enumerate(zip(input_data.iterfaces, local_data_for_each_interface)):
+            pass
+
+        #
+        # Set up data for next loop
+        #
+
+        # Remove any with too small an intensity
 
     summary = Summary(bundles, time.time() - start_time)
 
