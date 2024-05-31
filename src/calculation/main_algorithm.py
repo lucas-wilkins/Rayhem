@@ -6,8 +6,10 @@ import time
 from calculation.rays import RayBundle
 from calculation.simulation_parameters import SimulationParameters
 from calculation.summary import Summary
+from elements.material import Material
 from elements.simulation_data import SimulationData
 from elements.source_rays import SourceRays
+from elements.surface import Surface
 from spectral_sampling.spectral_distribution import SpectralDistribution
 
 logger = logging.getLogger("main_algorithm")
@@ -114,8 +116,8 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
 
             # Transform rays into the coordinate system of the interface
 
-            local_origins = interface_and_transform.reverse_point_transform(origins[to_check])
-            local_directions = interface_and_transform.reverse_direction_transform(origins[to_check])
+            local_origins = interface_and_transform.reverse_point_transform(origins[to_check, :])
+            local_directions = interface_and_transform.reverse_direction_transform(directions[to_check, :])
 
             # Calculate the distances and collision points
 
@@ -133,27 +135,49 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
 
             local_replace_flag = collision_distances[to_check] > distances
 
+            # Boolean array that references the initial rays, not the checked ones
+            to_check_and_replace = np.zeros((n_rays_in,), dtype=bool)
+            to_check_and_replace[to_check] = local_replace_flag
+
             #  - setting of 1d array elements to single value
-            collision_indices[to_check][local_replace_flag] = interface_index
+            collision_indices[to_check_and_replace] = interface_index
             #  - setting of 1d array elements to 1d array of values
-            collision_distances[to_check][local_replace_flag] = distances[local_replace_flag]
+            collision_distances[to_check_and_replace] = distances[local_replace_flag]
             #  - setting of 2d array elements to 2d array of values
-            collision_coordinates[to_check, :][local_replace_flag, :] = coordinates[local_replace_flag, :]
-            collision_directions[to_check, :][local_replace_flag, :] = local_directions[local_replace_flag, :]
+            collision_coordinates[to_check_and_replace, :] = coordinates[local_replace_flag, :]
+            collision_directions[to_check_and_replace, :] = local_directions[local_replace_flag, :]
+
+        # Expand any white rays into spectral components if needed
+        for interface_index, interface_and_transform in enumerate(input_data.iterfaces):
+            pass
 
         # Now we should have data on which rays collided and with what, so we can now work out what to do with them
 
         for interface_index, interface_and_transform in enumerate(input_data.interfaces):
             relevant_rays = collision_indices == interface_index
 
-            print(sum(relevant_rays.astype(int)), "rays hit interface", interface_index)
+            surface: Surface = interface_and_transform.interface.surface
+            material: Material = interface_and_transform.interface.material
+
+            # print(sum(relevant_rays.astype(int)), "rays hit interface", interface_index)
+
+            # Get the collision point, direction, normal,
+            # TODO: Include polarisation stuff
+            internal_coordinates = collision_coordinates[relevant_rays, :]
+            local_directions = collision_directions[relevant_rays, :]
+            local_position = surface.internal_to_local_position(internal_coordinates)
+            local_normals = surface.internal_to_local_normal(internal_coordinates)
+
+
+
+
 
 
     escaped = np.ones(source_ids.shape, dtype=bool)
 
     bundles = [RayBundle(
         origins=origins,
-        directions=directions,
+        directions_or_ends=directions,
         intensities=intensities,
         wavelengths=wavelengths,
         source_ids=source_ids,

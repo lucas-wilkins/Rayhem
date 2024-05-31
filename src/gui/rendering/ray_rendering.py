@@ -43,7 +43,7 @@ class RayRenderer(Renderable):
 
 
             start = ray_bundle.origins[ray_bundle.escaped, :]
-            end = start + ray_bundle.directions[ray_bundle.escaped, :] * self.rendering_parameters.escaped_length
+            end = start + ray_bundle.directions_or_ends[ray_bundle.escaped, :] * self.rendering_parameters.escaped_length
 
             # This will interleave the two arrays of points
             vertices = np.concatenate((start, end), axis=1).reshape(-1).astype(np.float32)

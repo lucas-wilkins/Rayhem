@@ -6,7 +6,7 @@ class RayBundle:
     """ Bundle of rays, one for each step of the calculation """
 
     origins: np.ndarray
-    directions: np.ndarray
+    directions_or_ends: np.ndarray
     intensities: np.ndarray
     wavelengths: np.ndarray
     source_ids: np.ndarray
