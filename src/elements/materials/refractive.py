@@ -14,7 +14,8 @@ class RefractiveMaterial(Material):
         raise NotImplementedError(f"n (refractive index) not implemented for {self.__class__.__name__}")
 
     def propagate(self, data: IntermediateData) -> IntermediateData:
-        pass
+        # TODO: Implement
+        raise NotImplementedError("TODO!!!!")
 
 
 

@@ -1,12 +1,12 @@
 from elements.material import Material
-from elements.materials.reflecting.perfect_mirror import PerfectMirror
+from elements.materials.reflecting.ideal_mirror import IdealMirror
 
 
 class MaterialLibrary:
     """ Library containing the different materials available """
 
     def __init__(self):
-         materials_list = [PerfectMirror]
+         materials_list = [IdealMirror]
 
          self.materials: dict[str, type[Material]] = {cls.serialisation_name(): cls for cls in materials_list}
 
@@ -15,7 +15,7 @@ class MaterialLibrary:
 
     def default(self):
         """ Default material """
-        return PerfectMirror()
+        return IdealMirror()
 
     def serialise(self, material: Material):
         return {

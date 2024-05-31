@@ -36,20 +36,17 @@ class RayRenderer(Renderable):
 
         for ray_bundle in self._rays:
 
-            #
-            # Render the escaped rays
-            #
-            wls = ray_bundle.wavelengths[ray_bundle.escaped]
+            start = ray_bundle.origins
+            escaped = ray_bundle.escaped
+            end = ray_bundle.directions_or_ends.copy()
 
-
-            start = ray_bundle.origins[ray_bundle.escaped, :]
-            end = start + ray_bundle.directions_or_ends[ray_bundle.escaped, :] * self.rendering_parameters.escaped_length
+            end[escaped, :] = start[escaped, :] + ray_bundle.directions_or_ends[escaped, :] * self.rendering_parameters.escaped_length
 
             # This will interleave the two arrays of points
             vertices = np.concatenate((start, end), axis=1).reshape(-1).astype(np.float32)
 
             # colours from the colour scheme
-            raw_colors = self.colour_scheme.wavelength_to_rgba(wls).astype(np.float32)
+            raw_colors = self.colour_scheme.wavelength_to_rgba(ray_bundle.wavelengths).astype(np.float32)
             colors = np.concatenate((raw_colors, raw_colors), axis=1).reshape(-1)
 
             # Generate buffers and bind them

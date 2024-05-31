@@ -14,7 +14,7 @@ from spectral_sampling.spectral_distribution import SpectralDistribution
 
 logger = logging.getLogger("main_algorithm")
 
-def main_algorithm(input_data: SimulationData, parameters: SimulationParameters) -> list[RayBundle]:
+def main_algorithm(input_data: SimulationData, parameters: SimulationParameters) -> tuple[list[RayBundle], Summary]:
     """ Main algorithm """
 
     start_time = time.time()
@@ -211,9 +211,9 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
         #
         # Expand any white rays into spectral components if needed
         #
-        for interface_index, (interface_and_transform, data) in enumerate(zip(input_data.iterfaces, local_data_for_each_interface)):
+        for interface_index, (interface_and_transform, data) in enumerate(zip(input_data.interfaces, local_data_for_each_interface)):
 
-            if interface_and_transform.interface.is_dispersive():
+            if interface_and_transform.interface.material.is_dispersive():
 
 
                 #
@@ -243,7 +243,7 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
                     _updated_indices = (update_indices.reshape(-1, 1) * np.ones((1, n_duplications), dtype=int)).reshape(-1) # Can be faster?
                     index_array = np.concatenate((keep_indices, _updated_indices))
 
-                    local_sources = data.local_sources[index_array]
+                    data.local_sources = data.local_sources[index_array]
 
                     data.local_position = data.local_position[index_array, :]
                     data.local_directions = data.local_directions[index_array, :]
@@ -267,15 +267,49 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
         # It might branch into multiple rays, but this will be handled by the material
         #
 
-        new_local_data_for_each_interface = []
-        for interface_index, (interface_and_transform, data) in enumerate(zip(input_data.iterfaces, local_data_for_each_interface)):
-            pass
+        origins = []
+        directions = []
+        wavelengths = []
+        intensities = []
+        source_ids = []
+
+        for interface_and_transform, data in zip(input_data.interfaces, local_data_for_each_interface):
+            # IMPORTANT NOTE: Modifying in place is allowed here, must not change this algorithm
+            #                 in such a way as to require the data not change
+
+            propagation_data: IntermediateData = interface_and_transform.interface.material.propagate(data)
+
+            origins.append(interface_and_transform.forward_point_transform(propagation_data.local_origins))
+            directions.append(interface_and_transform.forward_direction_transform(propagation_data.local_directions))
+            wavelengths.append(propagation_data.wavelengths)
+            intensities.append(propagation_data.intensities)
+            source_ids.append(propagation_data.source_ids)
+
+        # states = np.concatenate(states) # TODO: Part of the pathing implementation
+
 
         #
         # Set up data for next loop
         #
 
+        origins = np.vstack(origins)
+        directions = np.vstack(directions)
+        intensities = np.concatenate(intensities)
+        wavelengths = np.concatenate(wavelengths)
+        source_ids = np.concatenate(source_ids)
+
         # Remove any with too small an intensity
+        not_too_dim = intensities > parameters.minimum_intensity
+
+        # If this means we have none left, break
+        if not np.any(not_too_dim):
+            break
+
+        origins = origins[not_too_dim, :]
+        directions = directions[not_too_dim, :]
+        intensities = intensities[not_too_dim]
+        wavelengths = wavelengths[not_too_dim]
+        source_ids = source_ids[not_too_dim]
 
     summary = Summary(bundles, time.time() - start_time)
 

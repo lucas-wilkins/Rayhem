@@ -18,15 +18,15 @@
         "class": "transformation",
         "data": {
           "rotation": {
-            "angle": 0.0,
+            "angle": 0.7853981633974483,
             "x": 0.0,
-            "y": 0.0,
-            "z": 1.0
+            "y": 1.0,
+            "z": 0.0
           },
           "translation": {
             "x": 0.0,
             "y": 0.0,
-            "z": -2.0
+            "z": 3.0
           }
         },
         "children": [
@@ -49,12 +49,11 @@
         ]
       },
       {
-        "class": "point_source",
+        "class": "single_ray",
         "data": {
           "spectral_distribution": {
             "index": 1
-          },
-          "density": 2
+          }
         },
         "children": []
       }

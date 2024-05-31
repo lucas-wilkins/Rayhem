@@ -22,7 +22,10 @@ class Material(Serialisable):
         pass
 
     def propagate(self, data: IntermediateData) -> IntermediateData:
-        """ Describes what a surface of this kind does to rays"""
+        """ Describes what a surface of this kind does to rays
+
+        Modifying in place IS ALLOWED
+        """
 
         raise NotImplementedError(f"propagate not implemented for material {self.__class__.__name__}")
 
