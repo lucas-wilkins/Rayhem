@@ -14,7 +14,7 @@ from spectral_sampling.spectral_distribution import SpectralDistribution
 
 logger = logging.getLogger("main_algorithm")
 
-def main_algorithm(input_data: SimulationData, parameters: SimulationParameters) -> tuple[list[RayBundle], Summary]:
+def main_algorithm(input_data: SimulationData, parameters: SimulationParameters, verbose=False) -> tuple[list[RayBundle], Summary]:
     """ Main algorithm """
 
     start_time = time.time()
@@ -104,6 +104,8 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
     bundles: list[RayBundle] = []
 
     for iteration in range(parameters.maximum_iterations):
+        if verbose:
+            print("Step", iteration+1)
 
         n_rays_in = len(intensities)
 
@@ -196,6 +198,18 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
             local_intensities = intensities[relevant_rays]
             local_sources = source_ids[relevant_rays]
             new_states = state_map[states[relevant_rays], interface_index] # Set new state here, before everything gets messed up
+
+            if verbose:
+                print("Interface", interface_index)
+                print(f"  relevant_rays", relevant_rays)
+                print(f"  coordinates", internal_coordinates.shape)
+                print(f"  directions", local_directions.shape)
+                print(f"  positions", local_position.shape)
+                print(f"  normals", local_normals.shape)
+                print(f"  wavelengths", local_wavelengths.shape, local_wavelengths)
+                print(f"  intensities", local_intensities.shape, local_intensities)
+                print(f"  sources", local_sources.shape, local_sources)
+                print(f"  states", new_states.shape, new_states)
 
             local_data_for_each_interface.append(
                 IntermediateData(

@@ -27,7 +27,8 @@ class IdealMirror(Material):
 
         # Note: modifies, rather than replaces values
 
-        component = np.tensordot(data.local_normals, data.local_directions, axes=(1,1))
+        component = np.sum(data.local_normals * data.local_directions, axis=1).reshape(-1, 1)
+
         data.local_directions -= 2*data.local_normals*component
 
         return data

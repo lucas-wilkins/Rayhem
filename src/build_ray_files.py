@@ -58,7 +58,6 @@ window.new()
 mirror1 = GenericInterface()
 mirror2 = GenericInterface()
 
-
 transform1 = Transformation()
 transform1.parentTree = window.element_tree
 transform1.translation = np.array([0, 0, 3], dtype=float)
@@ -69,21 +68,32 @@ transform1.addChild(mirror1)
 
 transform2 = Transformation()
 transform2.parentTree = window.element_tree
-transform2.translation = np.array([3, 0, 3], dtype=float)
+transform2.translation = np.array([-3, 0, 3], dtype=float)
 transform2.axis = np.array([0,1,0], dtype=float)
 transform2.angle_deg = 45
 transform2.addChild(mirror2)
 
+transform3 = Transformation()
+transform3.parentTree = window.element_tree
+transform3.translation = np.array([0.1, 0, 0])
+transform3.addChild(SingleRay())
+
 window.element_tree.sceneTreeRoot.addChild(transform1)
 window.element_tree.sceneTreeRoot.addChild(transform2)
+window.element_tree.sceneTreeRoot.addChild(transform3)
 window.element_tree.sceneTreeRoot.addChild(SingleRay())
 
 window.save("mirror_system.ray")
 
 
-#
-window.new()
+# Show the window
 
-window.show()
+# window.new()
+# window.show()
+# sys.exit(app.exec())
 
-sys.exit(app.exec())
+# ... actually, just exit
+
+print("Done!")
+sys.exit()
+

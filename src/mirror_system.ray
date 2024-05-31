@@ -58,7 +58,7 @@
             "z": 0.0
           },
           "translation": {
-            "x": 3.0,
+            "x": -3.0,
             "y": 0.0,
             "z": 3.0
           }
@@ -76,6 +76,33 @@
               "material": {
                 "name": "ideal_mirror",
                 "data": {}
+              }
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "class": "transformation",
+        "data": {
+          "rotation": {
+            "angle": 0.0,
+            "x": 0.0,
+            "y": 0.0,
+            "z": 1.0
+          },
+          "translation": {
+            "x": 0.1,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        "children": [
+          {
+            "class": "single_ray",
+            "data": {
+              "spectral_distribution": {
+                "index": 1
               }
             },
             "children": []
