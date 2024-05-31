@@ -2,8 +2,10 @@ from PySide6.QtWidgets import QDockWidget, QTreeWidget, QAbstractItemView, QTree
     QVBoxLayout, QPushButton, QHBoxLayout
 from PySide6.QtGui import Qt
 
+from elements.transformation import Transformation
 from gui.element_library_entry import ElementLibraryEntry
 from gui.rayhem_dock_window import RayhemDockWidget
+from media.icons import icons
 
 
 class ElementLibraryGroup(QTreeWidgetItem):
@@ -11,6 +13,15 @@ class ElementLibraryGroup(QTreeWidgetItem):
         super().__init__([name, ""])
 
         self.name = name
+
+class TransformEntry(ElementLibraryEntry):
+    def __init__(self):
+
+        QTreeWidgetItem.__init__(self, ["Transformation", "Rotates and translates child elements"])
+        self.setIcon(0, icons["transform"])
+
+    def create(self):
+        return Transformation()
 
 
 class ElementLibrary(RayhemDockWidget):
@@ -36,11 +47,13 @@ class ElementLibrary(RayhemDockWidget):
         self.detectors = ElementLibraryGroup("Detectors")
         self.other = ElementLibraryGroup("Other")
 
-        self.tree.insertTopLevelItem(0, self.sources)
-        self.tree.insertTopLevelItem(1, self.lenses)
-        self.tree.insertTopLevelItem(2, self.mirrors)
-        self.tree.insertTopLevelItem(3, self.detectors)
-        self.tree.insertTopLevelItem(4, self.other)
+        self.tree.insertTopLevelItem(0, TransformEntry())
+
+        self.tree.insertTopLevelItem(1, self.sources)
+        self.tree.insertTopLevelItem(2, self.lenses)
+        self.tree.insertTopLevelItem(3, self.mirrors)
+        self.tree.insertTopLevelItem(4, self.detectors)
+        self.tree.insertTopLevelItem(5, self.other)
 
         self.tree.setSelectionBehavior(QAbstractItemView.SelectItems)
         self.tree.selectionModel().selectionChanged.connect(self.onSelected)
@@ -77,6 +90,7 @@ class ElementLibrary(RayhemDockWidget):
 
     def fill_library(self):
         """ Fill the library widget with possibilities """
+
         # Sources
 
         from elements.sources.point import PointSource

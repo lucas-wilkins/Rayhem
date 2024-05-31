@@ -12,11 +12,11 @@ from media.icons import icons
 
 
 class GenericInterface(Element):
-    def __init__(self):
+    def __init__(self, material: Material | None = None, surface: Surface | None = None):
         super().__init__()
 
-        self.material: Material = material_library.default()
-        self.surface: Surface = surface_library.default()
+        self.material: Material = material_library.default() if material is None else material
+        self.surface: Surface = surface_library.default() if surface is None else surface
 
     @staticmethod
     def library_name() -> str:
@@ -29,6 +29,21 @@ class GenericInterface(Element):
     @staticmethod
     def library_icon() -> QIcon | None:
         return icons["interface"]
+
+    @staticmethod
+    def serialisation_name() -> str:
+        return "generic_interface"
+
+    @staticmethod
+    def deserialise(data: dict):
+        material = material_library.deserialise(data["material"])
+        surface = surface_library.deserialise(data["surface"])
+        return GenericInterface(material=material, surface=surface)
+
+    def serialise(self):
+        return {
+            "surface": surface_library.serialise(self.surface),
+            "material": material_library.serialise(self.material) }
 
     def transformed_sources(self) -> list["SourceAndTransform"]:
         return []

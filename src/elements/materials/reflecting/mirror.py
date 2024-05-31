@@ -7,7 +7,7 @@ class Mirror(Material):
 
     @staticmethod
     def serialisation_name() -> str:
-        raise "mirror"
+        return "mirror"
 
     def serialise(self) -> dict:
         return {}

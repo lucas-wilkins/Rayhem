@@ -1,0 +1,108 @@
+{
+  "scene": {
+    "class": "simulation",
+    "data": {
+      "simulation_parameters": {
+        "minimum_distance": 1e-09,
+        "maximum_rays": 1000000,
+        "minimum_intensity": 1e-09,
+        "maximum_iterations": 1000
+      },
+      "rendering_parameters": {
+        "show_escaped": false,
+        "escaped_length": 10
+      }
+    },
+    "children": [
+      {
+        "class": "transformation",
+        "data": {
+          "rotation": {
+            "angle": 0.0,
+            "x": 0.0,
+            "y": 0.0,
+            "z": 1.0
+          },
+          "translation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        "children": []
+      },
+      {
+        "class": "transformation",
+        "data": {
+          "rotation": {
+            "angle": 0.0,
+            "x": 0.0,
+            "y": 0.0,
+            "z": 1.0
+          },
+          "translation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        "children": [
+          {
+            "class": "transformation",
+            "data": {
+              "rotation": {
+                "angle": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 1.0
+              },
+              "translation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              }
+            },
+            "children": []
+          },
+          {
+            "class": "transformation",
+            "data": {
+              "rotation": {
+                "angle": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 1.0
+              },
+              "translation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              }
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "class": "transformation",
+        "data": {
+          "rotation": {
+            "angle": 0.0,
+            "x": 0.0,
+            "y": 0.0,
+            "z": 1.0
+          },
+          "translation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        "children": []
+      }
+    ]
+  },
+  "spectral_distributions": {
+    "custom_distributions": []
+  }
+}

@@ -9,8 +9,8 @@ class Summary:
 
         sizes = [ray_bundle.origins.shape[0] for ray_bundle in rays]
 
-        self.initial_count = sizes[0]
-        self.max_rays = max(sizes)
+        self.initial_count = sizes[0] if self.n_steps > 0 else 0 # ifs because it needs to be robust against empty
+        self.max_rays = max(sizes) if self.n_steps > 0 else 0
 
         self.total_rays = sum(sizes)
 

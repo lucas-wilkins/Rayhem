@@ -24,7 +24,7 @@ class ElementTreeItem(Serialisable, QTreeWidgetItem, HasMainWindowRepresentation
         return self._parentTree
 
     @parentTree.setter
-    def parentTree(self, parentTree: "ElementsTree"):
+    def parentTree(self, parentTree: "ElementTree"):
         self._parentTree = parentTree
 
     def onAnythingChanged(self):

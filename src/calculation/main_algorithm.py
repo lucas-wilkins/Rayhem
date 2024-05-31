@@ -19,7 +19,7 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
 
     # If there's no sources there's nothing to do, ongoing we assume >0 sources
     if len(input_data.sources) == 0:
-        return []
+        return [], Summary([], 0)
 
     # Create rays from sources
 
@@ -109,6 +109,8 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
         for interface_index, interface_and_transform in enumerate(input_data.interfaces):
             interface = interface_and_transform.interface
             to_check = check_matrix[states, interface_index]
+
+            print("Interface", interface_index, "checking", sum(to_check))
 
             # Transform rays into the coordinate system of the interface
 

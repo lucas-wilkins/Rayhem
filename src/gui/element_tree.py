@@ -3,6 +3,7 @@ from PySide6.QtWidgets import QDockWidget, QTreeWidget, QAbstractItemView, QWidg
 from PySide6.QtGui import Qt
 from PySide6 import QtCore
 
+from elements.generic_interface import GenericInterface
 from elements.simulation_data import SimulationData
 from elements.sources.point import PointSource
 from elements.sources.single_ray import SingleRay
@@ -13,7 +14,7 @@ from gui.rayhem_dock_window import RayhemDockWidget
 from loadsave import DeserialisationError
 
 # Lookup for deserialisation
-_classes = [ElementTreeRoot, Transformation, PointSource, SingleRay]
+_classes = [ElementTreeRoot, Transformation, PointSource, SingleRay, GenericInterface]
 _class_lookup: dict[str, type[ElementTreeItem]] = {cls.serialisation_name(): cls for cls in _classes}
 
 class ElementTree(RayhemDockWidget):

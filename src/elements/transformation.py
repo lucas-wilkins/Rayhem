@@ -42,7 +42,6 @@ class Transformation(ElementTreeItem):
         self._update_matrices()
 
 
-
     @staticmethod
     def serialisation_name() -> str:
         return "transformation"

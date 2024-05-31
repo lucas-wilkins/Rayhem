@@ -12,7 +12,7 @@ from src.gui.main_window import MainWindow
 
 window = MainWindow()
 
-window.load("dev_initial.ray")
+window.load("point_source_mirror.ray")
 
 window.show()
 
