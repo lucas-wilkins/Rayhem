@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QApplication
 import numpy as np
 
 from elements.generic_interface import GenericInterface
-from elements.materials.reflecting.mirror import Mirror
+from elements.materials.reflecting.perfect_mirror import PerfectMirror
 from elements.sources.point import PointSource
 from elements.transformation import Transformation
 from gui.main_window import MainWindow

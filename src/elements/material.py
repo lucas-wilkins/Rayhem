@@ -2,6 +2,7 @@ from typing import Sequence
 
 import numpy as np
 
+from elements.simulation_data import IntermediateData
 from loadsave import Serialisable
 from spectral_sampling.spectral_distribution import SpectralDistribution
 
@@ -16,11 +17,14 @@ class Material(Serialisable):
         """ Is this material dispersive? """
         return True
 
-    def split_white_rays(self, ray_data, spectral_sampling_lookup: Sequence[SpectralDistribution]):
-        """ Method to split white rays into spectral components """
-
     def setGLAppearance(self):
         """ GL Calls to set the appearance when rendering polygons """
-
-    def propagate(self, directions: np.ndarray, normals: np.ndarray, wavelengths: np.ndarray):
         pass
+
+    def propagate(self, data: IntermediateData) -> IntermediateData:
+        """ Describes what a surface of this kind does to rays"""
+
+        raise NotImplementedError(f"propagate not implemented for material {self.__class__.__name__}")
+
+    def editable(self) -> bool:
+        return False

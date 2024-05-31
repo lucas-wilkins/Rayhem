@@ -7,7 +7,7 @@ from calculation.rays import RayBundle
 from calculation.simulation_parameters import SimulationParameters
 from calculation.summary import Summary
 from elements.material import Material
-from elements.simulation_data import SimulationData
+from elements.simulation_data import SimulationData, IntermediateData
 from elements.source_rays import SourceRays
 from elements.surface import Surface
 from spectral_sampling.spectral_distribution import SpectralDistribution
@@ -185,7 +185,13 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
             local_sources = source_ids[relevant_rays]
 
             local_data_for_each_interface.append(
-                (local_position, local_directions, local_normals, local_wavelengths, local_intensities, local_sources))
+                IntermediateData(
+                    local_origins=local_position,
+                    local_directions=local_directions,
+                    local_normals=local_normals,
+                    wavelengths=local_wavelengths,
+                    intensities=local_intensities,
+                    source_ids=local_sources))
 
         bundles.append(
             RayBundle(origins=origins,
@@ -205,13 +211,10 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
         #
         # Expand any white rays into spectral components if needed
         #
-
-        new_local_data_for_each_interface = []
         for interface_index, (interface_and_transform, data) in enumerate(zip(input_data.iterfaces, local_data_for_each_interface)):
 
             if interface_and_transform.interface.is_dispersive():
 
-                local_position, local_directions, local_normals, local_wavelengths, local_intensities, local_sources = data
 
                 #
                 # Plan is:
@@ -225,10 +228,10 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
 
                     n_duplications = len(distribution.wavlengths)
 
-                    white_rays = np.isnan(local_wavelengths)
-                    use_source = (local_sources == source_id) & white_rays
+                    white_rays = np.isnan(data.wavelengths)
+                    use_source = (data.local_sources == source_id) & white_rays
 
-                    index_array = np.arange(len(local_sources))
+                    index_array = np.arange(len(data.local_sources))
 
                     update_indices = index_array[use_source]
                     keep_indices = index_array[~use_source]
@@ -240,29 +243,23 @@ def main_algorithm(input_data: SimulationData, parameters: SimulationParameters)
                     _updated_indices = (update_indices.reshape(-1, 1) * np.ones((1, n_duplications), dtype=int)).reshape(-1) # Can be faster?
                     index_array = np.concatenate((keep_indices, _updated_indices))
 
-                    local_sources = local_sources[index_array]
+                    local_sources = data.local_sources[index_array]
 
-                    local_position = local_position[index_array, :]
-                    local_directions = local_directions[index_array, :]
-                    local_normals = local_normals[index_array, :]
+                    data.local_position = data.local_position[index_array, :]
+                    data.local_directions = data.local_directions[index_array, :]
+                    data.local_normals = data.local_normals[index_array, :]
 
                     # Wavelengths need to be done in a very similar way, flattened matrix of wavelengths
                     # note: the dimension that varies is opposite on this one
-                    keep_wavelengths = local_wavelengths[keep_indices]
+                    keep_wavelengths = data.wavelengths[keep_indices]
                     updated_wavelengths = (np.ones((n_update, 1)) * distribution.wavelengths.reshape(1, -1)).reshape(-1)
-                    local_wavelengths = np.concatenate((keep_wavelengths, updated_wavelengths))
+                    data.wavelengths = np.concatenate((keep_wavelengths, updated_wavelengths))
 
-                    keep_intensities = local_intensities[keep_indices]
-                    updated_intensities = (local_intensities[update_indices].reshape(-1, 1) *
+                    keep_intensities = data.intensities[keep_indices]
+                    updated_intensities = (data.intensities[update_indices].reshape(-1, 1) *
                                            distribution.intensities.reshape(1, -1)).reshape(-1)
-                    local_intensities = np.concatenate((keep_intensities, updated_intensities))
+                    data.intensities = np.concatenate((keep_intensities, updated_intensities))
 
-                new_local_data_for_each_interface.append(
-                    (local_position, local_directions, local_normals, local_wavelengths, local_intensities, local_sources))
-            else:
-                new_local_data_for_each_interface.append(data)
-
-        local_data_for_each_interface = new_local_data_for_each_interface
 
         #
         # Work out what happens to each ray after it collides.

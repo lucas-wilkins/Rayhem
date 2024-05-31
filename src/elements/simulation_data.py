@@ -62,3 +62,15 @@ class SourceAndTransform(Transformer):
 class SimulationData:
     sources: list[SourceAndTransform]
     interfaces: list[InterfaceAndTransform]
+
+@dataclass
+class IntermediateData:
+    """ Data used in the middle of the calculation, needs to be sent to the material,
+    then returned in a modified form"""
+
+    local_origins: np.ndarray
+    local_directions: np.ndarray
+    local_normals: np.ndarray
+    wavelengths: np.ndarray
+    intensities: np.ndarray
+    source_ids: np.ndarray

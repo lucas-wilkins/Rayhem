@@ -1,20 +1,20 @@
 from elements.material import Material
 
 
-class Mirror(Material):
+class PerfectMirror(Material):
     def __init__(self):
         pass
 
     @staticmethod
     def serialisation_name() -> str:
-        return "mirror"
+        return "perfect_mirror"
 
     def serialise(self) -> dict:
         return {}
 
     @staticmethod
     def deserialise(data: dict):
-        return Mirror()
+        return PerfectMirror()
 
     def is_dispersive(self):
         return False
